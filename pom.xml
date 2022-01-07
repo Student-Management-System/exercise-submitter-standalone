@@ -5,7 +5,6 @@
     <artifactId>exercise-submitter-standalone</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
-
     <organization>
         <name>Software Systems Engineering, University of Hildesheim</name>
         <url>https://sse.uni-hildesheim.de/</url>
@@ -26,6 +25,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <mainclass>net.ssehub.teaching.exercise_submitter.standalone.StandaloneSubmitter</mainclass>
+        <jarname>ExerciseSubmitter</jarname>
     </properties>
 
     <build>
@@ -82,7 +83,7 @@
                 <configuration>
                     <configLocation>sse-checkstyle.xml</configLocation>
                     <encoding>UTF-8</encoding>
-                    <failOnViolation>true</failOnViolation>
+                    <failOnViolation>false</failOnViolation>
                     <includeResources>false</includeResources>
                     <includeTestResources>false</includeTestResources>
                     <includeTestSourceDirectory>true</includeTestSourceDirectory>
@@ -106,7 +107,58 @@
                 </dependencies>
             </plugin>
 
-            <!-- TODO: create runnable jar -->
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>${mainclass}</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <execution>
+                        <id>runnable-jar</id>
+                        <configuration>
+                            <archive>
+                                <manifest>
+                                    <mainClass>${mainclass}</mainClass>
+                                </manifest>
+                                <manifestEntries>
+                                    <Multi-Release>true</Multi-Release>
+                                </manifestEntries>
+                            </archive>
+                            <descriptorRefs>
+                                <descriptorRef>jar-with-dependencies</descriptorRef>
+                            </descriptorRefs>
+                        </configuration>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>create-bundle</id>
+                        <configuration>
+                            <overrideUserName>root</overrideUserName>
+                            <overrideGroupName>root</overrideGroupName>
+                            <descriptors>
+                                <descriptor>${project.basedir}/bundle.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
