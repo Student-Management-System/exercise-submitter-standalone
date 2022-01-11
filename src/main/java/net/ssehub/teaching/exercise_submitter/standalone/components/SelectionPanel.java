@@ -4,18 +4,27 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTree;
 
 import net.ssehub.teaching.exercise_submitter.standalone.listener.SubmissionListener;
 
+/**
+ * Display the selection field in the mainframe.
+ * 
+ * @author lukas
+ * @author adam
+ *
+ */
 public class SelectionPanel extends JPanel {
     
     private static final long serialVersionUID = 2873287812314470834L;
 
+    /**
+     * Instantiates new SelectionPanel.
+     * @param listener
+     */
     public SelectionPanel(SubmissionListener listener) {
         
         JPanel top = new JPanel(new FlowLayout());

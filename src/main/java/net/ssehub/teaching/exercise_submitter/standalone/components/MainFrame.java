@@ -11,16 +11,25 @@ import javax.swing.JSplitPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 
 import net.ssehub.teaching.exercise_submitter.standalone.listener.SubmissionListener;
 import java.awt.Toolkit;
 
+/**
+ * Presents the mainframe for the Application.
+ * 
+ * @author lukas
+ * @author Adam
+ *
+ */
 public class MainFrame extends JFrame {
 
     private static final long serialVersionUID = 197841797135847656L;
     
+    /**
+     * Instantiates new Mainframe.
+     */
     public MainFrame() {
         try {
             UIManager.setLookAndFeel(new FlatLightLaf());

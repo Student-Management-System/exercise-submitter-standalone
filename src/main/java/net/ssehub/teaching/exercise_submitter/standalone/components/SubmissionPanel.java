@@ -8,10 +8,22 @@ import javax.swing.JPanel;
 
 import net.ssehub.teaching.exercise_submitter.standalone.listener.SubmissionListener;
 
+/**
+ * Displays the submissionfiled in the mainframe.
+ * 
+ * @author lukas
+ * @author adam
+ *
+ */
 public class SubmissionPanel extends JPanel {
 
     private static final long serialVersionUID = -7484887017026208115L;
 
+       /**
+        * Instantiates new SubmissionPanel.
+        * 
+        * @param listener
+        */
     public SubmissionPanel(SubmissionListener listener) {
         JComboBox<String> homework = new JComboBox<>(new String[] {"Homework01", "Homework02"});
         
