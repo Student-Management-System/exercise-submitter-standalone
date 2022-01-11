@@ -9,16 +9,29 @@ import java.util.function.Consumer;
 
 import javax.swing.JOptionPane;
 
+/**
+ * Handles the events for that are relevant to the submission.
+ * 
+ * @author lukas
+ *
+ */
 public class SubmissionListener {
 
     private Optional<Path> currentSelection;
     
     private List<Consumer<Optional<Path>>> pathSelectionListener = new LinkedList<>();
-    
+    /**
+     * Adds a PathSelectionListener.
+     * @param listener
+     */
     public void addPathSelectionListener(Consumer<Optional<Path>> listener) {
         pathSelectionListener.add(listener);
     }
-    
+    /**
+     * Sets the selected Path.
+     * 
+     * @param path
+     */
     public void setSelectedPath(String path) {
         Path p = Path.of(path);
         if (Files.isDirectory(p)) {
@@ -32,6 +45,9 @@ public class SubmissionListener {
         pathSelectionListener.stream().forEach(l -> l.accept(currentSelection));
     }
     
+    /**
+     * Submits the current file from the selected path.
+     */
     public void submit() {
         System.out.println("Submitting " + currentSelection);
     }
