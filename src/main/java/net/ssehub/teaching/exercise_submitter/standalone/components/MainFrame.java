@@ -11,7 +11,11 @@ import javax.swing.JSplitPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatLightLaf;
+
 import net.ssehub.teaching.exercise_submitter.standalone.listener.SubmissionListener;
+import java.awt.Toolkit;
 
 public class MainFrame extends JFrame {
 
@@ -19,13 +23,12 @@ public class MainFrame extends JFrame {
     
     public MainFrame() {
         try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (ReflectiveOperationException e) {
-            e.printStackTrace();
+            UIManager.setLookAndFeel(new FlatLightLaf());
         } catch (UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
         
+        setIconImage(Toolkit.getDefaultToolkit().getImage(MainFrame.class.getResource("/components/logo.png")));
         SubmissionListener listener = new SubmissionListener();
         
         JPanel left = new JPanel(new BorderLayout());
@@ -37,7 +40,7 @@ public class MainFrame extends JFrame {
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, left, right);
         splitPane.setContinuousLayout(true);
 
-        add(splitPane);
+        getContentPane().add(splitPane);
         
         JMenuBar menu = new JMenuBar();
         setJMenuBar(menu);
@@ -52,11 +55,15 @@ public class MainFrame extends JFrame {
         
         JMenu help = new JMenu("Help");
         help.add(new JMenuItem("About"));
-        menu.add(help);
         
+//        JMenu themes = new JMenu("Themes");
+//        themes.add(new JMenuItem("Light"));
+//        themes.add(new JMenuItem("Dark"));
+//        
+        menu.add(help);
+        pack();
         setTitle("Standalone Exercise Submitter");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        pack();
         setLocationRelativeTo(null);
     }
 

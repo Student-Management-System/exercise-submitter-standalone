@@ -168,7 +168,15 @@
             <artifactId>exercise-submitter-lib</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
-    </dependencies>
+  
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf</artifactId>
+            <version>2.0</version>
+        </dependency>
+
+ </dependencies>
+
 
     <distributionManagement>
         <repository>
