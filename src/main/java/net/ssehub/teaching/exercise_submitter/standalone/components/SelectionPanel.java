@@ -3,7 +3,11 @@ package net.ssehub.teaching.exercise_submitter.standalone.components;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.io.File;
+import java.nio.file.Path;
+import java.util.Optional;
+
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -46,11 +50,17 @@ public class SelectionPanel extends JPanel {
 
         JButton button = new JButton("Choose");
         button.addActionListener((e) -> {
-
-            listener.setSelectedPath(pathField.getText());
+            if (pathField.getText().equals("")) {
+                Optional<Path> dialogPath = openFileDialog();
+                listener.setSelectedPath(dialogPath.isPresent() 
+                        ? dialogPath.get().toString() : "No Dir selected");
+            } else {
+                listener.setSelectedPath(pathField.getText());               
+            }
             listener.addPathSelectionListener((path) -> {
                 if (path.isPresent()) {
-                    setTree(createNodes(new DefaultMutableTreeNode("File Tree"), null, path.orElseThrow().toFile()));
+                    setTree(createNodes(new DefaultMutableTreeNode("File Tree"),
+                            null, path.orElseThrow().toFile()));
                 }
             }
             );
@@ -114,6 +124,23 @@ public class SelectionPanel extends JPanel {
     public void setTree(DefaultMutableTreeNode node) {
         DefaultTreeModel model = new DefaultTreeModel(node);
         this.tree.setModel(model);
+    }
+    /**
+     * Opens the {@see #JFileChooser}.
+     * 
+     * @return the Path as an Optional.
+     */
+    private Optional<Path> openFileDialog() {
+        Optional<Path> selectedPath = Optional.empty();
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        int option = fileChooser.showOpenDialog(this);
+        if (option == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            selectedPath = Optional.ofNullable(file.toPath());
+        }
+     
+        return selectedPath;
     }
 
 }
