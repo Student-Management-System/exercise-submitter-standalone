@@ -59,8 +59,7 @@ public class SelectionPanel extends JPanel {
             }
             listener.addPathSelectionListener((path) -> {
                 if (path.isPresent()) {
-                    setTree(createNodes(new DefaultMutableTreeNode("File Tree"),
-                            null, path.orElseThrow().toFile()));
+                    setTree(createsNodesForDirectory(new DefaultMutableTreeNode(""), path.orElseThrow().toFile()));
                 }
             }
             );
@@ -68,8 +67,9 @@ public class SelectionPanel extends JPanel {
         });
         top.add(button);
 
-        tree = new JTree(new DefaultMutableTreeNode("File Tree"));
+        tree = new JTree(new DefaultMutableTreeNode(""));
         tree.setCellRenderer(new CustomCellRenderer());
+        tree.setRootVisible(false);
 
         scrpane = new JScrollPane(tree, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -86,35 +86,28 @@ public class SelectionPanel extends JPanel {
      * Method that creates a {@see #DefaultMutableTreeNode} from a dir.
      * 
      * 
-     * @param node the root node.
-     * @param currentFile always set to null.
-     * @param dir the dir that should be noded.
+     * @param parentNode The parent node to add the nodes for the files to.
+     * @param dir The directory to create nodes for.
      * @return  the node
      */
-    public DefaultMutableTreeNode createNodes(DefaultMutableTreeNode node, File currentFile, File dir) {
-        if (currentFile == null) {
-            currentFile = dir;
-        }
-        if (currentFile.isDirectory()) {
-            File[] files = currentFile.listFiles();
-            if (files != null && files.length > 0) {
-                DefaultMutableTreeNode subDir = new DefaultMutableTreeNode(
-                        new CustomTreeCelItem(FileCategorie.DIRECTORY, currentFile.getName()));
-                for (int i = 0; i < files.length; i++) {
-                    node.add(createNodes(subDir, files[i], dir));
+    public DefaultMutableTreeNode createsNodesForDirectory(DefaultMutableTreeNode parentNode, File dir) {
+        File[] files = dir.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                FileCategorie category = file.isDirectory() ? FileCategorie.DIRECTORY : FileCategorie.FILE;
+                
+                DefaultMutableTreeNode fileNode = new DefaultMutableTreeNode(
+                        new CustomTreeCelItem(category, file.getName()));
+                
+                parentNode.add(fileNode);
+                
+                if (file.isDirectory()) {
+                    createsNodesForDirectory(fileNode, file);
                 }
-
-            } else {
-                node.add(new DefaultMutableTreeNode(
-                        new CustomTreeCelItem(FileCategorie.DIRECTORY, currentFile.getName())));
             }
-        } else {
-            DefaultMutableTreeNode file = new DefaultMutableTreeNode(
-                    new CustomTreeCelItem(FileCategorie.FILE, currentFile.getName()));
-            node.add(file);
         }
 
-        return node;
+        return parentNode;
     }
     
     /**
@@ -124,6 +117,9 @@ public class SelectionPanel extends JPanel {
     public void setTree(DefaultMutableTreeNode node) {
         DefaultTreeModel model = new DefaultTreeModel(node);
         this.tree.setModel(model);
+        for (int row = 0; row < this.tree.getRowCount(); row++) {
+            this.tree.expandRow(row);
+        }
     }
     /**
      * Opens the {@see #JFileChooser}.
