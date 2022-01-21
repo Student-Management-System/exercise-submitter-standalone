@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 import net.ssehub.teaching.exercise_submitter.lib.data.Assignment;
 import net.ssehub.teaching.exercise_submitter.lib.student_management_system.ApiException;
 import net.ssehub.teaching.exercise_submitter.standalone.StandaloneSubmitter;
+import net.ssehub.teaching.exercise_submitter.standalone.exception.ExceptionDialog;
 import net.ssehub.teaching.exercise_submitter.standalone.jobs.IRunnableJob;
 import net.ssehub.teaching.exercise_submitter.standalone.jobs.Job;
 import net.ssehub.teaching.exercise_submitter.standalone.jobs.JobResult;
@@ -106,7 +107,7 @@ public class SubmissionPanel extends JPanel {
                 homework.setSelectedIndex(0);
             }
         } else {
-            //TODO: exception handling
+            ExceptionDialog.createExceptionDialog("Submission uploading not succeeded", this);
         }
         
     }
