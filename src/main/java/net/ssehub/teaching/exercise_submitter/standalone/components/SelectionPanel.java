@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTree;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
@@ -45,13 +46,13 @@ public class SelectionPanel extends JPanel {
         JPanel top = new JPanel(new FlowLayout());
 
         JTextField pathField = new JTextField(30);
-        pathField.addActionListener((e) -> listener.setSelectedPath(pathField.getText()));
+        pathField.addActionListener(e -> listener.setSelectedPath(pathField.getText()));
         top.add(pathField);
 
         JButton button = new JButton("Choose");
-        button.addActionListener((e) -> {
+        button.addActionListener(e -> {
             if (pathField.getText().equals("")) {
-                Optional<Path> dialogPath = openFileDialog();
+                Optional<Path> dialogPath = this.openFileDialog();
                 listener.setSelectedPath(dialogPath.isPresent() 
                         ? dialogPath.get().toString() : "No Dir selected");
             } else {
@@ -71,15 +72,15 @@ public class SelectionPanel extends JPanel {
         tree.setCellRenderer(new CustomCellRenderer());
         tree.setRootVisible(false);
 
-        scrpane = new JScrollPane(tree, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrpane.setBorder(new FlatBorder());
-        scrpane.setViewportBorder(null);
+        this.scrpane = new JScrollPane(this.tree, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        this.scrpane.setBorder(new FlatBorder());
+        this.scrpane.setViewportBorder(null);
 
-        setLayout(new BorderLayout());
-        add(top, BorderLayout.NORTH);
+        this.setLayout(new BorderLayout());
+        this.add(top, BorderLayout.NORTH);
         // add(tree, BorderLayout.CENTER);
-        add(scrpane, BorderLayout.CENTER);
+        this.add(this.scrpane, BorderLayout.CENTER);
 
     }
     /**
