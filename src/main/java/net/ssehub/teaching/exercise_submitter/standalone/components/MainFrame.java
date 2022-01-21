@@ -1,6 +1,7 @@
 package net.ssehub.teaching.exercise_submitter.standalone.components;
 
 import java.awt.BorderLayout;
+import java.awt.Toolkit;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -14,7 +15,6 @@ import javax.swing.UnsupportedLookAndFeelException;
 import com.formdev.flatlaf.FlatLightLaf;
 
 import net.ssehub.teaching.exercise_submitter.standalone.listener.SubmissionListener;
-import java.awt.Toolkit;
 
 /**
  * Presents the mainframe for the Application.
@@ -37,7 +37,7 @@ public class MainFrame extends JFrame {
             e.printStackTrace();
         }
         
-        setIconImage(Toolkit.getDefaultToolkit().getImage(MainFrame.class.getResource("/components/logo.png")));
+        this.setIconImage(Toolkit.getDefaultToolkit().getImage(MainFrame.class.getResource("/components/logo.png")));
         SubmissionListener listener = new SubmissionListener();
         
         JPanel left = new JPanel(new BorderLayout());
@@ -49,10 +49,10 @@ public class MainFrame extends JFrame {
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, left, right);
         splitPane.setContinuousLayout(true);
 
-        getContentPane().add(splitPane);
+        this.getContentPane().add(splitPane);
         
         JMenuBar menu = new JMenuBar();
-        setJMenuBar(menu);
+        this.setJMenuBar(menu);
         
         
         JMenu submitMenu = new JMenu("Submission");
@@ -70,10 +70,10 @@ public class MainFrame extends JFrame {
 //        themes.add(new JMenuItem("Dark"));
 //        
         menu.add(help);
-        pack();
-        setTitle("Standalone Exercise Submitter");
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
+        this.pack();
+        this.setTitle("Standalone Exercise Submitter");
+        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        this.setLocationRelativeTo(null);
     }
 
 }

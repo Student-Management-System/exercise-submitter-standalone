@@ -29,9 +29,10 @@ public class Job<Output, ExceptionType> extends Thread {
         this.jobResult = new JobResult<Output, ExceptionType>();
     }
     
+
     @Override
     public void run() {
-        this.job.run(null);
+        this.job.run(jobResult);
         this.callback.accept(this);
     }
     /**

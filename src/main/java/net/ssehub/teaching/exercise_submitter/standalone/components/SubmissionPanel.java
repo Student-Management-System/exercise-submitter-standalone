@@ -1,11 +1,21 @@
 package net.ssehub.teaching.exercise_submitter.standalone.components;
 
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
+import net.ssehub.teaching.exercise_submitter.lib.data.Assignment;
+import net.ssehub.teaching.exercise_submitter.lib.student_management_system.ApiException;
+import net.ssehub.teaching.exercise_submitter.standalone.StandaloneSubmitter;
+import net.ssehub.teaching.exercise_submitter.standalone.jobs.IRunnableJob;
+import net.ssehub.teaching.exercise_submitter.standalone.jobs.Job;
+import net.ssehub.teaching.exercise_submitter.standalone.jobs.JobResult;
 import net.ssehub.teaching.exercise_submitter.standalone.listener.SubmissionListener;
 
 /**
@@ -18,27 +28,87 @@ import net.ssehub.teaching.exercise_submitter.standalone.listener.SubmissionList
 public class SubmissionPanel extends JPanel {
 
     private static final long serialVersionUID = -7484887017026208115L;
+    private JComboBox<String> homework;
+    
+    private List<Assignment> assignments = new ArrayList<Assignment>();
 
-       /**
-        * Instantiates new SubmissionPanel.
-        * 
-        * @param listener
-        */
+    /**
+     * Instantiates new SubmissionPanel.
+     * 
+     * @param listener
+     */
     public SubmissionPanel(SubmissionListener listener) {
-        JComboBox<String> homework = new JComboBox<>(new String[] {"Homework01", "Homework02"});
-        
-        setLayout(new FlowLayout());
-        add(homework);
-        
+        this.homework = new JComboBox<String>();
+        this.homework.addActionListener(new ActionListener() {
+            
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                if (event.getActionCommand().equals("comboBoxChanged")) {
+                    if (!assignments.isEmpty()) {
+                        listener.setAssignment(assignments.get(homework.getSelectedIndex()));                       
+                    }
+                }
+            }
+        });
+
+        this.loadAssignmentsIntoComboBox();
+
+        this.setLayout(new FlowLayout());
+        this.add(this.homework);
+
         JButton submit = new JButton("Submit");
-        add(submit);
+        this.add(submit);
         submit.setEnabled(false);
         listener.addPathSelectionListener(path -> {
             submit.setEnabled(path.isPresent());
         });
-        submit.addActionListener((e) -> {
+        submit.addActionListener(e -> {
             listener.submit();
         });
     }
-    
+    /**
+     * Load the assignments in the combobox.
+     */
+    private void loadAssignmentsIntoComboBox() {
+
+        IRunnableJob<List<Assignment>, ApiException> func = new IRunnableJob<List<Assignment>, ApiException>() {
+
+            @Override
+            public void run(JobResult<List<Assignment>, ApiException> result) {
+                try {
+                    result.setOutput(StandaloneSubmitter.getHandler().getManager().getAllSubmittableAssignments());
+                } catch (ApiException e) {
+                    result.setException(e);
+                }
+
+            }
+        };
+        
+        Job<List<Assignment>, ApiException> job = 
+                new Job<List<Assignment>, ApiException>(this::onFinishedLoadAssignments, func);
+        job.start();
+        
+
+    }
+    /**
+     * Called when the load assignment job is finished.
+     * 
+     * @param job
+     */
+    private void onFinishedLoadAssignments(Job<List<Assignment>, ApiException> job) {
+        homework.removeAllItems();
+        if (job.getJobResult().hasSuceeded()) {
+            this.assignments = job.getJobResult().getOutput().get();
+            for (Assignment assignment : job.getJobResult().getOutput().get()) {
+                homework.addItem(assignment.getName());
+            }
+            if (homework.getItemCount() > 0) {
+                homework.setSelectedIndex(0);
+            }
+        } else {
+            //TODO: exception handling
+        }
+        
+    }
+
 }

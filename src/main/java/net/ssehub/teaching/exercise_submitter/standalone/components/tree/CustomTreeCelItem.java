@@ -37,7 +37,7 @@ public class CustomTreeCelItem {
      */
     public boolean isDir() {
         boolean result = false;
-        if (categorie == FileCategorie.DIRECTORY) {
+        if (this.categorie == FileCategorie.DIRECTORY) {
             result = true;
         }
         return result;
@@ -45,7 +45,7 @@ public class CustomTreeCelItem {
 
     @Override
     public String toString() {
-        return name;
+        return this.name;
     }
 
 }

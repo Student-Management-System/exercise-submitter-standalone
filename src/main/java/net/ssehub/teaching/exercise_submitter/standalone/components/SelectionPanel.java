@@ -48,24 +48,16 @@ public class SelectionPanel extends JPanel {
         JTextField pathField = new JTextField(30);
         pathField.addActionListener(e -> listener.setSelectedPath(pathField.getText()));
         top.add(pathField);
+        
+        listener.addPathSelectionListener((path) -> {
+            if (path.isPresent()) {
+                setTree(createsNodesForDirectory(new DefaultMutableTreeNode(""), path.orElseThrow().toFile()));
+            }
+        }
+        );
 
         JButton button = new JButton("Choose");
-        button.addActionListener(e -> {
-            if (pathField.getText().equals("")) {
-                Optional<Path> dialogPath = this.openFileDialog();
-                listener.setSelectedPath(dialogPath.isPresent() 
-                        ? dialogPath.get().toString() : "No Dir selected");
-            } else {
-                listener.setSelectedPath(pathField.getText());               
-            }
-            listener.addPathSelectionListener((path) -> {
-                if (path.isPresent()) {
-                    setTree(createsNodesForDirectory(new DefaultMutableTreeNode(""), path.orElseThrow().toFile()));
-                }
-            }
-            );
-
-        });
+        createButtonAction(listener, pathField, button);
         top.add(button);
 
         tree = new JTree(new DefaultMutableTreeNode(""));
@@ -82,6 +74,28 @@ public class SelectionPanel extends JPanel {
         // add(tree, BorderLayout.CENTER);
         this.add(this.scrpane, BorderLayout.CENTER);
 
+    }
+    
+    /**
+     * Create Button Events.
+     * 
+     * @param listener
+     * @param pathField
+     * @param button
+     */
+    private void createButtonAction(SubmissionListener listener, JTextField pathField, JButton button) {
+        button.addActionListener(e -> {
+            if (pathField.getText().equals("")) {
+                Optional<Path> dialogPath = this.openFileDialog();
+                listener.setSelectedPath(dialogPath.isPresent() 
+                        ? dialogPath.get().toString() : "No Dir selected");
+                if (dialogPath.isPresent()) {
+                    pathField.setText(dialogPath.get().toString());
+                }
+            } else {
+                listener.setSelectedPath(pathField.getText());               
+            }
+        });
     }
     /**
      * Method that creates a {@see #DefaultMutableTreeNode} from a dir.

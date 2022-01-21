@@ -9,6 +9,10 @@ import java.util.function.Consumer;
 
 import javax.swing.JOptionPane;
 
+import net.ssehub.teaching.exercise_submitter.lib.data.Assignment;
+import net.ssehub.teaching.exercise_submitter.standalone.submission.UploadSubmission;
+
+
 /**
  * Handles the events for that are relevant to the submission.
  * 
@@ -18,6 +22,7 @@ import javax.swing.JOptionPane;
 public class SubmissionListener {
 
     private Optional<Path> currentSelection;
+    private Optional<Assignment> currentAssignment;
     
     private List<Consumer<Optional<Path>>> pathSelectionListener = new LinkedList<>();
     /**
@@ -25,7 +30,7 @@ public class SubmissionListener {
      * @param listener
      */
     public void addPathSelectionListener(Consumer<Optional<Path>> listener) {
-        pathSelectionListener.add(listener);
+        this.pathSelectionListener.add(listener);
     }
     /**
      * Sets the selected Path.
@@ -35,21 +40,34 @@ public class SubmissionListener {
     public void setSelectedPath(String path) {
         Path p = Path.of(path);
         if (Files.isDirectory(p)) {
-            this.currentSelection = Optional.of(p);
+            this.currentSelection = Optional.of(p);     
         } else {
             this.currentSelection = Optional.empty();
             JOptionPane.showMessageDialog(null, path + " is not a directory", "Not a directory",
                     JOptionPane.ERROR_MESSAGE);
             // TODO: improve error message
         }
-        pathSelectionListener.stream().forEach(l -> l.accept(currentSelection));
+        
+        if (currentAssignment.isPresent()) {
+            this.pathSelectionListener.stream().forEach(l -> l.accept(this.currentSelection));
+        }
+    }
+    /**
+     * Sets the current selected assignment.
+     * 
+     * @param assignment
+     */
+    public void setAssignment(Assignment assignment) {
+        this.currentAssignment = Optional.ofNullable(assignment);
     }
     
     /**
      * Submits the current file from the selected path.
      */
     public void submit() {
-        System.out.println("Submitting " + currentSelection);
+        UploadSubmission uploadsubmission =
+                new UploadSubmission(this.currentSelection.get(), this.currentAssignment.get());
+        uploadsubmission.startAsync();
     }
     
 }

@@ -30,12 +30,12 @@ public class CustomCellRenderer extends DefaultTreeCellRenderer {
                 CustomTreeCelItem item = (CustomTreeCelItem) node.getUserObject();
                 if (item.isDir()) {
                     if (expanded) {
-                        setIcon(UIManager.getIcon("Tree.openIcon"));
+                        this.setIcon(UIManager.getIcon("Tree.openIcon"));
                     } else {
-                        setIcon(UIManager.getIcon("Tree.closedIcon"));
+                        this.setIcon(UIManager.getIcon("Tree.closedIcon"));
                     }
                 } else {
-                    setIcon(UIManager.getIcon("Tree.leafIcon"));
+                    this.setIcon(UIManager.getIcon("Tree.leafIcon"));
                 }
             }
         }
