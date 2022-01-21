@@ -1,6 +1,5 @@
 package net.ssehub.teaching.exercise_submitter.standalone.jobs;
 
-import java.util.Optional;
 import java.util.function.Consumer;
 
 /**
@@ -9,12 +8,13 @@ import java.util.function.Consumer;
  * @author lukas
  *
  * @param <Output>
+ * @param <ExceptionType>
  */
-public class Job<Output> extends Thread {
+public class Job<Output, ExceptionType> extends Thread {
     
-    private Optional<Output> output = Optional.empty();
-    private Consumer<Job<Output>> callback;
-    private  IRunnableJob<Output> job;
+    private JobResult<Output, ExceptionType> jobResult;
+    private Consumer<Job<Output, ExceptionType>> callback;
+    private IRunnableJob<Output, ExceptionType> job;
    
     /**
      * Function which is called when the job is done and the job function which will be executed.
@@ -22,24 +22,25 @@ public class Job<Output> extends Thread {
      * @param callback , job is done
      * @param job , job function that gets executed
      */
-    public Job(Consumer<Job<Output>> callback, IRunnableJob<Output> job) {
+    public Job(Consumer<Job<Output, ExceptionType>> callback, IRunnableJob<Output, ExceptionType> job) {
         super();
         this.callback = callback;
         this.job = job;
+        this.jobResult = new JobResult<Output, ExceptionType>();
     }
     
     @Override
     public void run() {
-        job.run();
-        callback.accept(this);
+        this.job.run(null);
+        this.callback.accept(this);
     }
     /**
      * Gets the job output.
      * 
      * @return Optional<Output>
      */
-    public Optional<Output> getOutput() {
-        return output;
+    public JobResult<Output, ExceptionType> getJobResult() {
+        return this.jobResult;
     }
 
 }
