@@ -108,7 +108,11 @@ public class LoginListener {
         
         
     }
-    
+    /**
+     * Called when the loginjob is finished.
+     * 
+     * @param job
+     */
     public void onFinishedLogin(Job<Boolean, LoginException> job) {
         if (job.getJobResult().hasSuceeded()) {           
             this.frame.get().setVisible(false);
