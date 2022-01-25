@@ -3,10 +3,16 @@ package net.ssehub.teaching.exercise_submitter.standalone.listener;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import javax.swing.JFrame;
+
 import net.ssehub.teaching.exercise_submitter.standalone.StandaloneSubmitter;
 import net.ssehub.teaching.exercise_submitter.standalone.components.LoginFrame;
 import net.ssehub.teaching.exercise_submitter.standalone.components.MainFrame;
+import net.ssehub.teaching.exercise_submitter.standalone.exception.ExceptionDialog;
 import net.ssehub.teaching.exercise_submitter.standalone.exception.LoginException;
+import net.ssehub.teaching.exercise_submitter.standalone.jobs.IRunnableJob;
+import net.ssehub.teaching.exercise_submitter.standalone.jobs.Job;
+import net.ssehub.teaching.exercise_submitter.standalone.jobs.JobResult;
 import net.ssehub.teaching.exercise_submitter.standalone.stumgmt.Credentials;
 
 /**
@@ -18,6 +24,8 @@ import net.ssehub.teaching.exercise_submitter.standalone.stumgmt.Credentials;
 public class LoginListener {
     private Optional<String> currentUsername = Optional.empty();
     private Optional<char[]> currentPassword = Optional.empty();
+    
+    private Optional<JFrame> frame = Optional.empty();
     
     private Optional<Consumer<Boolean>> buttonConsumer = Optional.empty();
     
@@ -76,14 +84,39 @@ public class LoginListener {
      * @param frame the frame
      */
     public void login(LoginFrame frame) {
-        try {
-            StandaloneSubmitter.getHandler().login(new Credentials(this.currentUsername.get(),
-                    this.currentPassword.get()));
-            frame.setVisible(false);
+        
+        this.frame = Optional.ofNullable(frame);
+        
+        IRunnableJob<Boolean, LoginException> func = new IRunnableJob<Boolean, LoginException>() {
+           
+            @Override
+            public void run(JobResult<Boolean, LoginException> result) {
+                try {
+                    StandaloneSubmitter.getHandler().login(new Credentials(currentUsername.get(),
+                            currentPassword.get()));
+                    result.setOutput(true);
+                } catch (LoginException e) {
+                    result.setOutput(false);
+                    result.setException(e);
+                }
+                
+            }
+        };
+        
+        Job<Boolean, LoginException> job = new Job<Boolean, LoginException>(this::onFinishedLogin, func);
+        job.start();
+        
+        
+    }
+    
+    public void onFinishedLogin(Job<Boolean, LoginException> job) {
+        if (job.getJobResult().hasSuceeded()) {           
+            this.frame.get().setVisible(false);
             new MainFrame().setVisible(true);
-        } catch (LoginException e) {
-            System.out.println("False");
+        } else {
+            ExceptionDialog.createExceptionDialog("Username or Password false", this.frame.get());
         }
+        
     }
     
     

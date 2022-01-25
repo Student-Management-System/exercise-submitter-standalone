@@ -9,16 +9,13 @@ package net.ssehub.teaching.exercise_submitter.standalone.exception;
 public class LoginException extends Exception {
     //TODO: add messages
   
-    public static final String USERNAMEFALSE = "";
-    
-
-    public static final String PASSWORDFALSE = "";
+    public static final String USERNAMEORPASSWORDFALSE = "The username or password is incorrect";
     
    
-    public static final String NOUSERNAMESAVED = "";
+    public static final String NOUSERNAMESAVED = "Unexpected Error: Please restart this Application";
     
  
-    public static final String NOPASSWORDSAVED = "";
+    public static final String NOPASSWORDSAVED = "Unexpected Error: Please restart this Application";
     
      
     private static final long serialVersionUID = 6086567974758084399L;

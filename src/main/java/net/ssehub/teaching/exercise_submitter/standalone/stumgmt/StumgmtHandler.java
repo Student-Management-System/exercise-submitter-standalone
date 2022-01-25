@@ -61,7 +61,7 @@ public class StumgmtHandler {
         } catch (UserNotInCourseException e) {
               
         } catch (AuthenticationException e) {          
-            throw new LoginException(LoginException.USERNAMEFALSE);
+            throw new LoginException(LoginException.USERNAMEORPASSWORDFALSE);
         } catch (ApiException e) {
             
         } catch (IOException e) {

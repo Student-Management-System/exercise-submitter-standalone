@@ -9,6 +9,7 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import net.ssehub.teaching.exercise_submitter.lib.data.Assignment;
 import net.ssehub.teaching.exercise_submitter.lib.student_management_system.ApiException;
@@ -100,12 +101,18 @@ public class SubmissionPanel extends JPanel {
         homework.removeAllItems();
         if (job.getJobResult().hasSuceeded()) {
             this.assignments = job.getJobResult().getOutput().get();
-            for (Assignment assignment : job.getJobResult().getOutput().get()) {
-                homework.addItem(assignment.getName());
-            }
-            if (homework.getItemCount() > 0) {
-                homework.setSelectedIndex(0);
-            }
+            SwingUtilities.invokeLater(new Runnable()  {
+                @Override
+                public void run() {               
+                    for (Assignment assignment : job.getJobResult().getOutput().get()) {
+                        homework.addItem(assignment.getName());
+                    }
+                    if (homework.getItemCount() > 0) {
+                        homework.setSelectedIndex(0);
+                    }             
+                }
+                  
+            });
         } else {
             ExceptionDialog.createExceptionDialog("Submission uploading not succeeded", this);
         }
