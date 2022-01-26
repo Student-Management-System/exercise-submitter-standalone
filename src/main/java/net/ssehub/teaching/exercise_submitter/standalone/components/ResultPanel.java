@@ -32,8 +32,12 @@ public class ResultPanel extends JPanel {
     public ResultPanel() {
         //TODO: better design
         JPanel northpanel = new JPanel(new FlowLayout());
+        
         JLabel label = new JLabel("Server Return:");
-        lblSubmissionStatus = new JLabel("Submission successfully submitted");
+        label.putClientProperty("FlatLaf.styleClass", "h3");
+        lblSubmissionStatus = new JLabel("");
+        lblSubmissionStatus.putClientProperty("FlatLaf.styleClass", "h3");
+        
         setLayout(new BorderLayout());
         northpanel.add(label);
         northpanel.add(lblSubmissionStatus);
@@ -46,6 +50,7 @@ public class ResultPanel extends JPanel {
         DefaultTableModel model = createTableColumns();
         
         listener = new ResultListener(model);
+        listener.setResultLabel(lblSubmissionStatus);
         
         model.insertRow(0, new Object[] {"warning", "; expected", "main.java"});
        

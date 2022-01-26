@@ -1,6 +1,9 @@
 package net.ssehub.teaching.exercise_submitter.standalone.listener;
 
 
+import java.util.Optional;
+
+import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
@@ -15,6 +18,7 @@ import net.ssehub.teaching.exercise_submitter.standalone.components.ResultPanel;
 public class ResultListener {
     
     private DefaultTableModel model;
+    private Optional<JLabel> resultLabel = Optional.empty();
     /**
      * Creates an new instance of {@link ResultListener}.
      * 
@@ -47,5 +51,26 @@ public class ResultListener {
             }
         });
     }
+    /**
+     * Sets the resultlabel as a parameter.
+     * 
+     * @param label
+     */
+    public void setResultLabel(JLabel label) {
+        this.resultLabel = Optional.ofNullable(label);
+    }
+    /**
+     * Sets the message that is displayed in the result label.
+     * 
+     * @param message
+     */
+    public void setResultMessage(String message) {
+        if (this.resultLabel.isPresent()) {
+            SwingUtilities.invokeLater(() -> {
+                this.resultLabel.get().setText(message);
+            });
+        }
+    }
+   
 
 }

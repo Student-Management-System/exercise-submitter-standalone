@@ -95,9 +95,11 @@ public class UploadSubmission {
             if (result.isAccepted()) {
                 JOptionPane.showMessageDialog(null, 
                         "Submission was accepted", "Success!" , JOptionPane.INFORMATION_MESSAGE);
+                changeResultLabel("Submission was accepted");
             } else {
                 ExceptionDialog.createExceptionDialog(
                         "Submission is NOT accepted see the result on the right side", null);
+                changeResultLabel("Submission is NOT accepted");
             }
             resultToTable(result);
            
@@ -125,6 +127,16 @@ public class UploadSubmission {
             listener.get().addRows(rows);
         }
         
+    }
+    
+    /**
+     * Changes the Resultlable in the {@link ResultPanel}.
+     * @param message
+     */
+    private void changeResultLabel(String message) {
+        if (listener.isPresent()) {
+            listener.get().setResultMessage(message);
+        }
     }
     
 
