@@ -21,17 +21,29 @@ import net.ssehub.teaching.exercise_submitter.standalone.submission.UploadSubmis
  */
 public class SubmissionListener {
 
-    private Optional<Path> currentSelection;
-    private Optional<Assignment> currentAssignment;
+    protected Optional<Path> currentSelection;
+    protected Optional<Assignment> currentAssignment;
     
     private List<Consumer<Optional<Path>>> pathSelectionListener = new LinkedList<>();
+    private List<Consumer<Optional<Assignment>>> assignmentSelectionListener = new LinkedList<>();
+    
     /**
      * Adds a PathSelectionListener.
      * @param listener
      */
     public void addPathSelectionListener(Consumer<Optional<Path>> listener) {
         this.pathSelectionListener.add(listener);
+        
     }
+    /**
+     * Add a AssignmentSelectionListener.
+     * 
+     * @param listener
+     */
+    public void addAssignmentSelectionListener(Consumer<Optional<Assignment>> listener) {
+        this.assignmentSelectionListener.add(listener);
+    }
+    
     /**
      * Sets the selected Path.
      * 
@@ -49,7 +61,7 @@ public class SubmissionListener {
         }
         
         if (currentAssignment.isPresent()) {
-            this.pathSelectionListener.stream().forEach(l -> l.accept(this.currentSelection));
+            this.pathSelectionListener.stream().forEach(l -> l.accept(currentSelection));
         }
     }
     /**
@@ -59,6 +71,9 @@ public class SubmissionListener {
      */
     public void setAssignment(Assignment assignment) {
         this.currentAssignment = Optional.ofNullable(assignment);
+        if (currentAssignment.isPresent()) {
+            this.assignmentSelectionListener.stream().forEach(l -> l.accept(currentAssignment));
+        }
     }
     
     /**
@@ -69,5 +84,7 @@ public class SubmissionListener {
                 new UploadSubmission(this.currentSelection.get(), this.currentAssignment.get());
         uploadsubmission.startAsync();
     }
+    
+    
     
 }

@@ -14,6 +14,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import com.formdev.flatlaf.FlatLightLaf;
 
+import net.ssehub.teaching.exercise_submitter.standalone.listener.MenuListener;
 import net.ssehub.teaching.exercise_submitter.standalone.listener.SubmissionListener;
 
 /**
@@ -55,11 +56,7 @@ public class MainFrame extends JFrame {
         this.setJMenuBar(menu);
         
         
-        JMenu submitMenu = new JMenu("Submission");
-        submitMenu.add(new JMenuItem("Submit"));
-        submitMenu.add(new JMenuItem("Show Versions"));
-        submitMenu.add(new JMenuItem("Download Submission"));
-        submitMenu.add(new JMenuItem("Compare Submission"));
+        JMenu submitMenu = createSubmitMenu(listener);
         menu.add(submitMenu);
         
         JMenu help = new JMenu("Help");
@@ -74,6 +71,28 @@ public class MainFrame extends JFrame {
         this.setTitle("Standalone Exercise Submitter");
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
+    }
+    /**
+     * Create the toolbar menue.
+     * 
+     * @param listener
+     * @return JMenu
+     */
+    private JMenu createSubmitMenu(SubmissionListener listener) {
+        MenuListener menuListener = new MenuListener();
+        menuListener.setSubmissionListener(listener);
+        JMenu submitMenu = new JMenu("Submission");
+        submitMenu.add(new JMenuItem("Submit"));
+        
+        JMenuItem showVersion = new JMenuItem("Show Versions");
+        showVersion.setEnabled(false);
+        showVersion.addActionListener(e -> menuListener.openListVersion(this));
+        listener.addAssignmentSelectionListener(l -> showVersion.setEnabled(l.isPresent()));
+        
+        submitMenu.add(showVersion);
+        submitMenu.add(new JMenuItem("Download Submission"));
+        submitMenu.add(new JMenuItem("Compare Submission"));
+        return submitMenu;
     }
 
 }
