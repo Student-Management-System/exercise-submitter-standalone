@@ -8,7 +8,7 @@ package net.ssehub.teaching.exercise_submitter.standalone.dialog;
  * @param <Result> , the type of object which is expected as the result.
  *
  */
-public interface DialogCallback<Result> {
+public interface IDialogCallback<Result> {
     
     /**
      * This function gets called when the callback is triggerd.

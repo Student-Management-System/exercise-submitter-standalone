@@ -17,7 +17,7 @@ import net.ssehub.teaching.exercise_submitter.standalone.stumgmt.StumgmtHandler;
  */
 public class StandaloneSubmitter {
     
-    private static StumgmtHandler handler = new StumgmtHandler();;
+    private static StumgmtHandler handler = new StumgmtHandler();
     
 
     /**

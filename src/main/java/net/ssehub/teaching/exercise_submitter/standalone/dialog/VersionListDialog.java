@@ -35,7 +35,7 @@ public class VersionListDialog extends Dialog<Version> {
      * @param callback
      */
     public VersionListDialog(List<Version> versions
-            , JFrame frame, DialogCallback<Version> callback) {
+            , JFrame frame, IDialogCallback<Version> callback) {
         super(frame, callback);
         this.versions = versions;
         this.frame = frame;

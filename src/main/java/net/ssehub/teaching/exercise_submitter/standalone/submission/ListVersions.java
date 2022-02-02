@@ -11,7 +11,7 @@ import net.ssehub.teaching.exercise_submitter.lib.replay.ReplayException;
 import net.ssehub.teaching.exercise_submitter.lib.replay.Replayer.Version;
 import net.ssehub.teaching.exercise_submitter.lib.student_management_system.ApiException;
 import net.ssehub.teaching.exercise_submitter.standalone.StandaloneSubmitter;
-import net.ssehub.teaching.exercise_submitter.standalone.dialog.DialogCallback;
+import net.ssehub.teaching.exercise_submitter.standalone.dialog.IDialogCallback;
 import net.ssehub.teaching.exercise_submitter.standalone.dialog.VersionListDialog;
 import net.ssehub.teaching.exercise_submitter.standalone.exception.ExceptionDialog;
 import net.ssehub.teaching.exercise_submitter.standalone.jobs.IRunnableJob;
@@ -28,7 +28,7 @@ public class ListVersions {
     
     private Assignment assignment;
     private JFrame frame;
-    private DialogCallback<Version> callback;
+    private IDialogCallback<Version> callback;
     
    
     /**
@@ -38,7 +38,7 @@ public class ListVersions {
      * @param assignment
      * @param frame , can be null
      */
-    public ListVersions(Assignment assignment, JFrame frame, DialogCallback<Version> callback) {
+    public ListVersions(Assignment assignment, JFrame frame, IDialogCallback<Version> callback) {
         this.assignment = assignment;
         this.frame = frame;
         this.callback = callback;

@@ -84,13 +84,17 @@ public class MainFrame extends JFrame {
         JMenu submitMenu = new JMenu("Submission");
         submitMenu.add(new JMenuItem("Submit"));
         
-        JMenuItem showVersion = new JMenuItem("Show Versions");
-        showVersion.setEnabled(false);
+        JMenuItem showVersion = new JMenuItem("Show Versions"); 
         showVersion.addActionListener(e -> menuListener.openListVersion(this));
         listener.addAssignmentSelectionListener(l -> showVersion.setEnabled(l.isPresent()));
         
         submitMenu.add(showVersion);
-        submitMenu.add(new JMenuItem("Download Submission"));
+        
+        JMenuItem downloadSubmission = new JMenuItem("Download Submission");
+        downloadSubmission.addActionListener(e -> menuListener.downloadSubmission(this));
+        listener.addAssignmentSelectionListener(l -> downloadSubmission.setEnabled(l.isPresent()));
+        
+        submitMenu.add(downloadSubmission);
         submitMenu.add(new JMenuItem("Compare Submission"));
         return submitMenu;
     }
