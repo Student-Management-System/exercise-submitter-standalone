@@ -10,8 +10,8 @@ public class ConnectionException extends Exception {
     
     //TODO: add messages
     
-    public static final String NONETWORKCONNECTION = "";
-    public static final String NOSERVERCONNECTION = "";
+    public static final String NONETWORKCONNECTION = "Please check your network connection";
+    public static final String NOSERVERCONNECTION = "The server are not available";
     
 
     private static final long serialVersionUID = -9145088507193391196L;

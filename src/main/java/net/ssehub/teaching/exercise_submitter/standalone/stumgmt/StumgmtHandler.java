@@ -11,6 +11,8 @@ import net.ssehub.teaching.exercise_submitter.lib.student_management_system.ApiE
 import net.ssehub.teaching.exercise_submitter.lib.student_management_system.AuthenticationException;
 import net.ssehub.teaching.exercise_submitter.lib.student_management_system.NetworkException;
 import net.ssehub.teaching.exercise_submitter.lib.student_management_system.UserNotInCourseException;
+import net.ssehub.teaching.exercise_submitter.standalone.exception.ConnectionException;
+import net.ssehub.teaching.exercise_submitter.standalone.exception.ExceptionDialog;
 import net.ssehub.teaching.exercise_submitter.standalone.exception.LoginException;
 
 /***
@@ -37,8 +39,9 @@ public class StumgmtHandler {
      * Inits the manager.
      *
      * @throws LoginException the login exception
+     * @throws ConnectionException 
      */
-    private void initManager() throws LoginException {
+    private void initManager() throws LoginException, ConnectionException {
         
         try {
             Properties prop = new Properties();
@@ -57,7 +60,7 @@ public class StumgmtHandler {
             this.manager = factory.build();
             
         } catch (NetworkException e) {
-            //TODO: good exception handling
+            throw new ConnectionException(ConnectionException.NONETWORKCONNECTION);
         } catch (UserNotInCourseException e) {
               
         } catch (AuthenticationException e) {          
@@ -82,8 +85,9 @@ public class StumgmtHandler {
             try {
                 this.initManager();
             } catch (LoginException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                ExceptionDialog.createExceptionDialog(e.getLocalizedMessage(), null);
+            } catch (ConnectionException e) {
+                ExceptionDialog.createExceptionDialog(e.getLocalizedMessage(), null);
             }
         }        
         return this.manager;
@@ -94,13 +98,16 @@ public class StumgmtHandler {
      *
      * @param credentials the credentials
      * @throws LoginException the login exception
+     * @throws ConnectionException 
      */
-    public void login(Credentials credentials) throws LoginException {
+    public void login(Credentials credentials) throws LoginException, ConnectionException {
         //TODO: better throw system
         try {
             this.credentials = Optional.ofNullable(credentials);
             this.initManager();
         } catch (LoginException e) {
+            throw e;
+        } catch (ConnectionException e) {
             throw e;
         }
     }

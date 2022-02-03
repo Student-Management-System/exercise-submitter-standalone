@@ -8,6 +8,7 @@ import javax.swing.JFrame;
 import net.ssehub.teaching.exercise_submitter.standalone.StandaloneSubmitter;
 import net.ssehub.teaching.exercise_submitter.standalone.components.LoginFrame;
 import net.ssehub.teaching.exercise_submitter.standalone.components.MainFrame;
+import net.ssehub.teaching.exercise_submitter.standalone.exception.ConnectionException;
 import net.ssehub.teaching.exercise_submitter.standalone.exception.ExceptionDialog;
 import net.ssehub.teaching.exercise_submitter.standalone.exception.LoginException;
 import net.ssehub.teaching.exercise_submitter.standalone.jobs.IRunnableJob;
@@ -87,15 +88,15 @@ public class LoginListener {
         
         this.frame = Optional.ofNullable(frame);
         
-        IRunnableJob<Boolean, LoginException> func = new IRunnableJob<Boolean, LoginException>() {
+        IRunnableJob<Boolean, Exception> func = new IRunnableJob<Boolean, Exception>() {
            
             @Override
-            public void run(JobResult<Boolean, LoginException> result) {
+            public void run(JobResult<Boolean, Exception> result) {
                 try {
                     StandaloneSubmitter.getHandler().login(new Credentials(currentUsername.get(),
                             currentPassword.get()));
                     result.setOutput(true);
-                } catch (LoginException e) {
+                } catch (LoginException | ConnectionException e) {
                     result.setOutput(false);
                     result.setException(e);
                 }
@@ -103,7 +104,7 @@ public class LoginListener {
             }
         };
         
-        Job<Boolean, LoginException> job = new Job<Boolean, LoginException>(this::onFinishedLogin, func);
+        Job<Boolean, Exception> job = new Job<Boolean, Exception>(this::onFinishedLogin, func);
         job.start();
         
         
@@ -113,12 +114,14 @@ public class LoginListener {
      * 
      * @param job
      */
-    public void onFinishedLogin(Job<Boolean, LoginException> job) {
+    public void onFinishedLogin(Job<Boolean, Exception> job) {
         if (job.getJobResult().hasSuceeded()) {           
             this.frame.get().setVisible(false);
             new MainFrame().setVisible(true);
         } else {
-            ExceptionDialog.createExceptionDialog("Username or Password false", this.frame.get());
+            Exception ex = job.getJobResult().getException().get();
+            ExceptionDialog.createExceptionDialog(ex.getLocalizedMessage(), this.frame.get());
+           
         }
         
     }
