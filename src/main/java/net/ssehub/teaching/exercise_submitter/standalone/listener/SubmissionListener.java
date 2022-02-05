@@ -21,11 +21,12 @@ import net.ssehub.teaching.exercise_submitter.standalone.submission.UploadSubmis
  */
 public class SubmissionListener {
 
-    protected Optional<Path> currentSelection;
-    protected Optional<Assignment> currentAssignment;
+    protected Optional<Path> currentSelection = Optional.empty();
+    protected Optional<Assignment> currentAssignment = Optional.empty();
     
     private List<Consumer<Optional<Path>>> pathSelectionListener = new LinkedList<>();
     private List<Consumer<Optional<Assignment>>> assignmentSelectionListener = new LinkedList<>();
+    private List<Consumer<Boolean>> pathAndAssignmentSelectionListener = new LinkedList<>();
     
     /**
      * Adds a PathSelectionListener.
@@ -42,6 +43,14 @@ public class SubmissionListener {
      */
     public void addAssignmentSelectionListener(Consumer<Optional<Assignment>> listener) {
         this.assignmentSelectionListener.add(listener);
+    }
+    /**
+     * Adds a Path and AssignmentListener.
+     * 
+     * @param listener
+     */
+    public void addPathAndAssignmentSelectionListener(Consumer<Boolean> listener) {
+        this.pathAndAssignmentSelectionListener.add(listener);
     }
     
     /**
@@ -62,8 +71,10 @@ public class SubmissionListener {
         
         if (currentAssignment.isPresent()) {
             this.pathSelectionListener.stream().forEach(l -> l.accept(currentSelection));
+            this.pathAndAssignmentSelectionListener.stream().forEach(l ->
+                l.accept(currentSelection.isPresent() && currentAssignment.isPresent()));
         }
-    }
+    }       
     /**
      * Sets the current selected assignment.
      * 
@@ -73,6 +84,8 @@ public class SubmissionListener {
         this.currentAssignment = Optional.ofNullable(assignment);
         if (currentAssignment.isPresent()) {
             this.assignmentSelectionListener.stream().forEach(l -> l.accept(currentAssignment));
+            this.pathAndAssignmentSelectionListener.stream().forEach(l ->
+                l.accept(currentSelection.isPresent() && currentAssignment.isPresent()));
         }
     }
     

@@ -82,20 +82,44 @@ public class MainFrame extends JFrame {
         MenuListener menuListener = new MenuListener();
         menuListener.setSubmissionListener(listener);
         JMenu submitMenu = new JMenu("Submission");
-        submitMenu.add(new JMenuItem("Submit"));
+        
+        JMenuItem submit = new JMenuItem("Submit");
+        submit.addActionListener(e -> listener.submit());
+        listener.addPathAndAssignmentSelectionListener(l -> {
+            submit.setEnabled(l);
+            submit.setToolTipText(l ? "Submit" : "You need to select an assignment and a directory");    
+        });
+        
+        submitMenu.add(submit);
         
         JMenuItem showVersion = new JMenuItem("Show Versions"); 
         showVersion.addActionListener(e -> menuListener.openListVersion(this));
-        listener.addAssignmentSelectionListener(l -> showVersion.setEnabled(l.isPresent()));
+        listener.addAssignmentSelectionListener(l -> { 
+            showVersion.setEnabled(l.isPresent());
+            showVersion.setToolTipText(l.isPresent() ? "Show Versions" : "You need to select an assignment");
+        });
         
         submitMenu.add(showVersion);
         
         JMenuItem downloadSubmission = new JMenuItem("Download Submission");
         downloadSubmission.addActionListener(e -> menuListener.downloadSubmission(this));
-        listener.addAssignmentSelectionListener(l -> downloadSubmission.setEnabled(l.isPresent()));
+        listener.addAssignmentSelectionListener(l -> {
+            downloadSubmission.setEnabled(l.isPresent());
+            downloadSubmission.setToolTipText(l.isPresent() 
+                    ? "Download Submission" : "You need to select an assignment");
+        });
+            
         
         submitMenu.add(downloadSubmission);
-        submitMenu.add(new JMenuItem("Compare Submission"));
+        
+        JMenuItem compare = new JMenuItem("Compare Submission");
+        compare.addActionListener(e -> menuListener.compareSubmissions(this));
+        listener.addPathAndAssignmentSelectionListener(l -> {
+            compare.setEnabled(l);
+            compare.setToolTipText(l ? "Compare" : "You need to select an assignment and a directory");    
+        });
+        
+        submitMenu.add(compare);
         return submitMenu;
     }
 

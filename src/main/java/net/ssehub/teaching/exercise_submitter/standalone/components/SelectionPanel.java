@@ -85,16 +85,14 @@ public class SelectionPanel extends JPanel {
      */
     private void createButtonAction(SubmissionListener listener, JTextField pathField, JButton button) {
         button.addActionListener(e -> {
-            if (pathField.getText().equals("")) {
-                Optional<Path> dialogPath = this.openFileDialog();
-                listener.setSelectedPath(dialogPath.isPresent() 
-                        ? dialogPath.get().toString() : "No Dir selected");
-                if (dialogPath.isPresent()) {
-                    pathField.setText(dialogPath.get().toString());
-                }
-            } else {
-                listener.setSelectedPath(pathField.getText());               
+        
+            Optional<Path> dialogPath = this.openFileDialog();
+            listener.setSelectedPath(dialogPath.isPresent() 
+                    ? dialogPath.get().toString() : "No Dir selected");
+            if (dialogPath.isPresent()) {
+                pathField.setText(dialogPath.get().toString());
             }
+            
         });
     }
     /**
