@@ -17,9 +17,9 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import com.formdev.flatlaf.FlatLightLaf;
 
 import net.ssehub.teaching.exercise_submitter.standalone.listener.LoginListener;
+import net.ssehub.teaching.exercise_submitter.standalone.themes.ThemeManager;
 
 
 /**
@@ -38,7 +38,7 @@ public class LoginFrame extends JFrame {
      */
     public LoginFrame() {
         try {
-            UIManager.setLookAndFeel(new FlatLightLaf());
+            UIManager.setLookAndFeel(ThemeManager.getSavedTheme());
         } catch (UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }

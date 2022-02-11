@@ -12,10 +12,11 @@ import javax.swing.JSplitPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import com.formdev.flatlaf.FlatLightLaf;
 
 import net.ssehub.teaching.exercise_submitter.standalone.listener.MenuListener;
 import net.ssehub.teaching.exercise_submitter.standalone.listener.SubmissionListener;
+import net.ssehub.teaching.exercise_submitter.standalone.themes.ThemeManager;
+import net.ssehub.teaching.exercise_submitter.standalone.themes.ThemeManager.Theme;
 
 /**
  * Presents the mainframe for the Application.
@@ -33,7 +34,7 @@ public class MainFrame extends JFrame {
      */
     public MainFrame() {
         try {
-            UIManager.setLookAndFeel(new FlatLightLaf());
+            UIManager.setLookAndFeel(ThemeManager.getSavedTheme());
         } catch (UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
@@ -61,11 +62,10 @@ public class MainFrame extends JFrame {
         
         JMenu help = new JMenu("Help");
         help.add(new JMenuItem("About"));
+             
+        JMenu themes = createThemeMenu();
         
-//        JMenu themes = new JMenu("Themes");
-//        themes.add(new JMenuItem("Light"));
-//        themes.add(new JMenuItem("Dark"));
-//        
+        menu.add(themes);
         menu.add(help);
         this.pack();
         this.setTitle("Standalone Exercise Submitter");
@@ -85,6 +85,7 @@ public class MainFrame extends JFrame {
         
         JMenuItem submit = new JMenuItem("Submit");
         submit.addActionListener(e -> listener.submit());
+        submit.setEnabled(false);
         listener.addPathAndAssignmentSelectionListener(l -> {
             submit.setEnabled(l);
             submit.setToolTipText(l ? "Submit" : "You need to select an assignment and a directory");    
@@ -94,6 +95,7 @@ public class MainFrame extends JFrame {
         
         JMenuItem showVersion = new JMenuItem("Show Versions"); 
         showVersion.addActionListener(e -> menuListener.openListVersion(this));
+        showVersion.setEnabled(false);
         listener.addAssignmentSelectionListener(l -> { 
             showVersion.setEnabled(l.isPresent());
             showVersion.setToolTipText(l.isPresent() ? "Show Versions" : "You need to select an assignment");
@@ -103,6 +105,7 @@ public class MainFrame extends JFrame {
         
         JMenuItem downloadSubmission = new JMenuItem("Download Submission");
         downloadSubmission.addActionListener(e -> menuListener.downloadSubmission(this));
+        downloadSubmission.setEnabled(false);
         listener.addAssignmentSelectionListener(l -> {
             downloadSubmission.setEnabled(l.isPresent());
             downloadSubmission.setToolTipText(l.isPresent() 
@@ -114,6 +117,7 @@ public class MainFrame extends JFrame {
         
         JMenuItem compare = new JMenuItem("Compare Submission");
         compare.addActionListener(e -> menuListener.compareSubmissions(this));
+        compare.setEnabled(false);
         listener.addPathAndAssignmentSelectionListener(l -> {
             compare.setEnabled(l);
             compare.setToolTipText(l ? "Compare" : "You need to select an assignment and a directory");    
@@ -121,6 +125,21 @@ public class MainFrame extends JFrame {
         
         submitMenu.add(compare);
         return submitMenu;
+    }
+    
+    /**
+     * Creates the theme Menu.
+     * 
+     * @return {@link JMenu}
+     */
+    private JMenu createThemeMenu() {
+        JMenu themesMenu =  new JMenu("Themes");
+        for (Theme theme : ThemeManager.Theme.values()) {
+            JMenuItem item = new JMenuItem(theme.toString());
+            item.addActionListener(e -> ThemeManager.changeTheme(theme));
+            themesMenu.add(item);
+        }       
+        return themesMenu;
     }
 
 }

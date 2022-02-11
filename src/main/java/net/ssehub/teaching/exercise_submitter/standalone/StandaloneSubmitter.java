@@ -3,10 +3,10 @@ package net.ssehub.teaching.exercise_submitter.standalone;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import com.formdev.flatlaf.FlatLightLaf;
 
 import net.ssehub.teaching.exercise_submitter.standalone.components.LoginFrame;
 import net.ssehub.teaching.exercise_submitter.standalone.stumgmt.StumgmtHandler;
+import net.ssehub.teaching.exercise_submitter.standalone.themes.ThemeManager;
 
 /**
  * Handles the Standalone submitter.
@@ -27,7 +27,7 @@ public class StandaloneSubmitter {
     public static void main(String[] args) {
         
         try {
-            UIManager.setLookAndFeel(new FlatLightLaf());
+            UIManager.setLookAndFeel(ThemeManager.getSavedTheme());
         } catch (UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
