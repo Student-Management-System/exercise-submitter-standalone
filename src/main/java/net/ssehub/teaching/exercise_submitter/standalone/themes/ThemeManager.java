@@ -4,7 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.prefs.Preferences;
 
+import javax.swing.JOptionPane;
 import javax.swing.LookAndFeel;
+import javax.swing.SwingUtilities;
 
 import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatDarkLaf;
@@ -59,6 +61,9 @@ public class ThemeManager {
     public static void changeTheme(Theme theme) {
         Preferences prefs = Preferences.userNodeForPackage(ThemeManager.class);
         prefs.put("themename", theme.toString());
+        SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, 
+                            "Program needs to restart to apply changes", 
+                            "Warning!" , JOptionPane.WARNING_MESSAGE));
     }
     /**
      * Gets the map of themes.

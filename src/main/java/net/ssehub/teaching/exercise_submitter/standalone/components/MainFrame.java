@@ -60,8 +60,7 @@ public class MainFrame extends JFrame {
         JMenu submitMenu = createSubmitMenu(listener);
         menu.add(submitMenu);
         
-        JMenu help = new JMenu("Help");
-        help.add(new JMenuItem("About"));
+        JMenu help = createHelpMenu();
              
         JMenu themes = createThemeMenu();
         
@@ -71,6 +70,18 @@ public class MainFrame extends JFrame {
         this.setTitle("Standalone Exercise Submitter");
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
+    }
+    
+    /**
+     * Creates the help menue.
+     * 
+     * @return {@link JMenu}
+     */
+    private JMenu createHelpMenu() {
+        JMenu help = new JMenu("Help");
+        JMenuItem about = new JMenuItem("About");
+        help.add(about);
+        return help;
     }
     /**
      * Create the toolbar menue.
