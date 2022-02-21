@@ -16,5 +16,5 @@ public interface IDialogCallback<Result> {
      * @param result
      */
     public void run(DialogResult<Result> result);
-
+    
 }

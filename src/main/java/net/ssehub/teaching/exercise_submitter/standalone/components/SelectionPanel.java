@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -21,6 +22,7 @@ import com.formdev.flatlaf.ui.FlatBorder;
 import net.ssehub.teaching.exercise_submitter.standalone.components.tree.CustomCellRenderer;
 import net.ssehub.teaching.exercise_submitter.standalone.components.tree.CustomTreeCelItem;
 import net.ssehub.teaching.exercise_submitter.standalone.components.tree.CustomTreeCelItem.FileCategorie;
+import net.ssehub.teaching.exercise_submitter.standalone.components.tree.FileCounter;
 import net.ssehub.teaching.exercise_submitter.standalone.listener.SubmissionListener;
 
 /**
@@ -35,6 +37,8 @@ public class SelectionPanel extends JPanel {
     private static final long serialVersionUID = 2873287812314470834L;
     private JTree tree;
     private JScrollPane scrpane;
+    private FileNumberDisplay filesDisplay;
+    private FileCounter filecounter;
 
     /**
      * Instantiates new SelectionPanel.
@@ -49,9 +53,13 @@ public class SelectionPanel extends JPanel {
         pathField.addActionListener(e -> listener.setSelectedPath(pathField.getText()));
         top.add(pathField);
         
+        filecounter = new FileCounter();
+        
         listener.addPathSelectionListener((path) -> {
             if (path.isPresent()) {
-                setTree(createsNodesForDirectory(new DefaultMutableTreeNode(""), path.orElseThrow().toFile()));
+                filecounter.clear();
+                setTree(createsNodesForDirectory(
+                        new DefaultMutableTreeNode(""), path.orElseThrow().toFile(), filecounter));
             }
         }
         );
@@ -68,14 +76,23 @@ public class SelectionPanel extends JPanel {
                 ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         this.scrpane.setBorder(new FlatBorder());
         this.scrpane.setViewportBorder(null);
+        
+        JPanel middle = new JPanel(new BorderLayout());
+        middle.add(this.scrpane, BorderLayout.NORTH);
+        
+        filesDisplay = new FileNumberDisplay();
+        
+      
+        middle.add(filesDisplay, BorderLayout.CENTER);
+        
 
         this.setLayout(new BorderLayout());
         this.add(top, BorderLayout.NORTH);
         // add(tree, BorderLayout.CENTER);
-        this.add(this.scrpane, BorderLayout.CENTER);
+        this.add(middle, BorderLayout.CENTER);
 
     }
-    
+
     /**
      * Create Button Events.
      * 
@@ -101,9 +118,11 @@ public class SelectionPanel extends JPanel {
      * 
      * @param parentNode The parent node to add the nodes for the files to.
      * @param dir The directory to create nodes for.
+     * @param counter The counter for counting the files.
      * @return  the node
      */
-    public DefaultMutableTreeNode createsNodesForDirectory(DefaultMutableTreeNode parentNode, File dir) {
+    public DefaultMutableTreeNode createsNodesForDirectory(
+            DefaultMutableTreeNode parentNode, File dir, FileCounter counter) {
         File[] files = dir.listFiles();
         if (files != null) {
             for (File file : files) {
@@ -112,10 +131,12 @@ public class SelectionPanel extends JPanel {
                 DefaultMutableTreeNode fileNode = new DefaultMutableTreeNode(
                         new CustomTreeCelItem(category, file.getName()));
                 
+                counter.checkFile(file.getName());
+                
                 parentNode.add(fileNode);
                 
                 if (file.isDirectory()) {
-                    createsNodesForDirectory(fileNode, file);
+                    createsNodesForDirectory(fileNode, file, counter);
                 }
             }
         }
@@ -133,6 +154,15 @@ public class SelectionPanel extends JPanel {
         for (int row = 0; row < this.tree.getRowCount(); row++) {
             this.tree.expandRow(row);
         }
+        
+        filesDisplay.updateDisplay(filecounter);
+        
+        if (!filecounter.areJavaFilesAvailable()) {
+            JOptionPane.showMessageDialog(this, 
+                    "No JavaFiles in selected directory",
+                    "Warning!" , JOptionPane.WARNING_MESSAGE);
+        }
+        
     }
     /**
      * Opens the {@see #JFileChooser}.
