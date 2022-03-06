@@ -56,11 +56,12 @@ public class MainFrame extends JFrame {
         JMenuBar menu = new JMenuBar();
         this.setJMenuBar(menu);
         
+        MenuListener menuListener = new MenuListener();
         
-        JMenu submitMenu = createSubmitMenu(listener);
+        JMenu submitMenu = createSubmitMenu(listener, menuListener);
         menu.add(submitMenu);
         
-        JMenu help = createHelpMenu();
+        JMenu help = createHelpMenu(menuListener);
              
         JMenu themes = createThemeMenu();
         
@@ -75,11 +76,13 @@ public class MainFrame extends JFrame {
     /**
      * Creates the help menue.
      * 
+     * @param menuListener
      * @return {@link JMenu}
      */
-    private JMenu createHelpMenu() {
+    private JMenu createHelpMenu(MenuListener menuListener) {
         JMenu help = new JMenu("Help");
         JMenuItem about = new JMenuItem("About");
+        about.addActionListener(e -> menuListener.openAbout(this));
         help.add(about);
         return help;
     }
@@ -87,10 +90,10 @@ public class MainFrame extends JFrame {
      * Create the toolbar menue.
      * 
      * @param listener
+     * @param menuListener 
      * @return JMenu
      */
-    private JMenu createSubmitMenu(SubmissionListener listener) {
-        MenuListener menuListener = new MenuListener();
+    private JMenu createSubmitMenu(SubmissionListener listener, MenuListener menuListener) {
         menuListener.setSubmissionListener(listener);
         JMenu submitMenu = new JMenu("Submission");
         

@@ -3,8 +3,10 @@ package net.ssehub.teaching.exercise_submitter.standalone.listener;
 import java.util.Optional;
 
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 import net.ssehub.teaching.exercise_submitter.lib.replay.Replayer.Version;
+import net.ssehub.teaching.exercise_submitter.standalone.StandaloneSubmitter;
 import net.ssehub.teaching.exercise_submitter.standalone.components.MainFrame;
 import net.ssehub.teaching.exercise_submitter.standalone.dialog.IDialogCallback;
 import net.ssehub.teaching.exercise_submitter.standalone.dialog.DialogResult;
@@ -105,6 +107,21 @@ public class MenuListener {
                     listener.get().currentSelection.get());
             comparesubmissions.startAsync();
         }
-    }   
+    }
+    
+    /**
+     * Opens the about dialog.
+     * 
+     * @param frame
+     */
+    public void openAbout(MainFrame frame) {
+        String version = "1.0";
+        String github = "www.test.de";
+        SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(frame, 
+                                        "Version: " +  version + "\n"
+                                        + "Github: " + github,
+                                        "About" , JOptionPane.INFORMATION_MESSAGE));
+        
+    }
     
 }
