@@ -61,8 +61,10 @@ public class SubmissionPanel extends JPanel {
         JButton submit = new JButton("Submit");
         this.add(submit);
         submit.setEnabled(false);
-        listener.addPathSelectionListener(path -> {
-            submit.setEnabled(path.isPresent());
+        submit.setToolTipText("You need to select an assignment and a directory");
+        listener.addPathAndAssignmentSelectionListener(l -> {
+            submit.setEnabled(l);
+            submit.setToolTipText(l ? "Submit" : "You need to select an assignment and a directory");    
         });
         submit.addActionListener(e -> {
             listener.submit();

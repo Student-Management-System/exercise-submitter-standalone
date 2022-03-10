@@ -100,6 +100,7 @@ public class MainFrame extends JFrame {
         JMenuItem submit = new JMenuItem("Submit");
         submit.addActionListener(e -> listener.submit());
         submit.setEnabled(false);
+        submit.setToolTipText("You need to select an assignment and a directory"); 
         listener.addPathAndAssignmentSelectionListener(l -> {
             submit.setEnabled(l);
             submit.setToolTipText(l ? "Submit" : "You need to select an assignment and a directory");    
@@ -110,6 +111,7 @@ public class MainFrame extends JFrame {
         JMenuItem showVersion = new JMenuItem("Show Versions"); 
         showVersion.addActionListener(e -> menuListener.openListVersion(this));
         showVersion.setEnabled(false);
+        showVersion.setToolTipText("You need to select an assignment");
         listener.addAssignmentSelectionListener(l -> { 
             showVersion.setEnabled(l.isPresent());
             showVersion.setToolTipText(l.isPresent() ? "Show Versions" : "You need to select an assignment");
@@ -120,6 +122,7 @@ public class MainFrame extends JFrame {
         JMenuItem downloadSubmission = new JMenuItem("Download Submission");
         downloadSubmission.addActionListener(e -> menuListener.downloadSubmission(this));
         downloadSubmission.setEnabled(false);
+        downloadSubmission.setToolTipText("You need to select an assignment");
         listener.addAssignmentSelectionListener(l -> {
             downloadSubmission.setEnabled(l.isPresent());
             downloadSubmission.setToolTipText(l.isPresent() 
@@ -132,6 +135,7 @@ public class MainFrame extends JFrame {
         JMenuItem compare = new JMenuItem("Compare Submission");
         compare.addActionListener(e -> menuListener.compareSubmissions(this));
         compare.setEnabled(false);
+        compare.setToolTipText("You need to select an assignment and a directory");  
         listener.addPathAndAssignmentSelectionListener(l -> {
             compare.setEnabled(l);
             compare.setToolTipText(l ? "Compare" : "You need to select an assignment and a directory");    
