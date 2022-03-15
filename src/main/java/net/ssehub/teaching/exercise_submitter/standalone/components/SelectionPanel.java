@@ -23,6 +23,7 @@ import net.ssehub.teaching.exercise_submitter.standalone.components.tree.CustomC
 import net.ssehub.teaching.exercise_submitter.standalone.components.tree.CustomTreeCelItem;
 import net.ssehub.teaching.exercise_submitter.standalone.components.tree.CustomTreeCelItem.FileCategorie;
 import net.ssehub.teaching.exercise_submitter.standalone.components.tree.FileCounter;
+import net.ssehub.teaching.exercise_submitter.standalone.components.tree.FileFilter;
 import net.ssehub.teaching.exercise_submitter.standalone.listener.SubmissionListener;
 
 /**
@@ -131,10 +132,15 @@ public class SelectionPanel extends JPanel {
                 DefaultMutableTreeNode fileNode = new DefaultMutableTreeNode(
                         new CustomTreeCelItem(category, file.getName()));
                 
-                counter.checkFile(file.getName());
+                FileFilter filter = new FileFilter(file.getName());
                 
-                parentNode.add(fileNode);
-                
+                if (filter.isAllowed()) {
+                    
+                    counter.checkFile(file.getName());
+                    
+                    parentNode.add(fileNode);
+                    
+                }
                 if (file.isDirectory()) {
                     createsNodesForDirectory(fileNode, file, counter);
                 }
