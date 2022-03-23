@@ -6,10 +6,9 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import net.ssehub.teaching.exercise_submitter.lib.replay.Replayer.Version;
-import net.ssehub.teaching.exercise_submitter.standalone.StandaloneSubmitter;
 import net.ssehub.teaching.exercise_submitter.standalone.components.MainFrame;
-import net.ssehub.teaching.exercise_submitter.standalone.dialog.IDialogCallback;
 import net.ssehub.teaching.exercise_submitter.standalone.dialog.DialogResult;
+import net.ssehub.teaching.exercise_submitter.standalone.dialog.IDialogCallback;
 import net.ssehub.teaching.exercise_submitter.standalone.submission.CompareSubmission;
 import net.ssehub.teaching.exercise_submitter.standalone.submission.ListVersions;
 import net.ssehub.teaching.exercise_submitter.standalone.submission.ReplaySubmission;

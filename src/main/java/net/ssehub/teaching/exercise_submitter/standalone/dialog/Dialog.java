@@ -16,7 +16,7 @@ public class Dialog<Result> extends JDialog {
     private static final long serialVersionUID = 7462574162272078093L;
     
     private IDialogCallback<Result> callback;
-    private JFrame frame;
+//    private JFrame frame;
     private DialogResult<Result> dialogResult = new DialogResult<Result>();
     
     /**
@@ -29,7 +29,7 @@ public class Dialog<Result> extends JDialog {
     public Dialog(JFrame frame, IDialogCallback<Result> callback) {
         super(frame);
         this.callback = callback;
-        this.frame = frame;
+//        this.frame = frame;
     }
     /**
      * gets called when a callback event is triggerd.
