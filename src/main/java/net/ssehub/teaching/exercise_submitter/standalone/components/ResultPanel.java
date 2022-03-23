@@ -71,9 +71,9 @@ public class ResultPanel extends JPanel {
         DefaultTableModel model = new DefaultTableModel();
        
         table.setModel(model);
-        model.addColumn("Errortype");
-        model.addColumn("Errormessage");
-        model.addColumn("Filename");
+        model.addColumn("Type");
+        model.addColumn("Message");
+        model.addColumn("File");
         return model;
     }
     /**
