@@ -1,7 +1,6 @@
 package net.ssehub.teaching.exercise_submitter.standalone.components;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.Optional;
@@ -48,11 +47,11 @@ public class SelectionPanel extends JPanel {
      */
     public SelectionPanel(SubmissionListener listener) {
 
-        JPanel top = new JPanel(new FlowLayout());
+        JPanel top = new JPanel(new BorderLayout(5, 5));
 
         JTextField pathField = new JTextField(30);
         pathField.addActionListener(e -> listener.setSelectedPath(pathField.getText()));
-        top.add(pathField);
+        top.add(pathField, BorderLayout.CENTER);
         
         filecounter = new FileCounter();
         
@@ -67,7 +66,7 @@ public class SelectionPanel extends JPanel {
 
         JButton button = new JButton("Choose");
         createButtonAction(listener, pathField, button);
-        top.add(button);
+        top.add(button, BorderLayout.EAST);
 
         tree = new JTree(new DefaultMutableTreeNode(""));
         tree.setCellRenderer(new CustomCellRenderer());
