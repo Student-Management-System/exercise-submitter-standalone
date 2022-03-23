@@ -52,8 +52,6 @@ public class ResultPanel extends JPanel {
         listener = new ResultListener(model);
         listener.setResultLabel(lblSubmissionStatus);
         
-        model.insertRow(0, new Object[] {"warning", "; expected", "main.java"});
-       
         UploadSubmission.setResultListener(listener);
      
         add(new JScrollPane(table), BorderLayout.CENTER);
