@@ -21,7 +21,7 @@ import net.ssehub.teaching.exercise_submitter.lib.replay.Replayer;
 import net.ssehub.teaching.exercise_submitter.lib.replay.Replayer.Version;
 import net.ssehub.teaching.exercise_submitter.lib.student_management_system.ApiException;
 import net.ssehub.teaching.exercise_submitter.standalone.StandaloneSubmitter;
-import net.ssehub.teaching.exercise_submitter.standalone.exception.ExceptionDialog;
+import net.ssehub.teaching.exercise_submitter.standalone.exception.JobResultException;
 import net.ssehub.teaching.exercise_submitter.standalone.jobs.IRunnableJob;
 import net.ssehub.teaching.exercise_submitter.standalone.jobs.Job;
 import net.ssehub.teaching.exercise_submitter.standalone.jobs.JobResult;
@@ -111,7 +111,7 @@ public class ReplaySubmission {
             });
         } else {
             //TODO: exception bsp: already existing.
-            ExceptionDialog.createExceptionDialog("Downloading submission failed", frame);
+            JobResultException.handleSubmissionException(job.getJobResult(), "Replaying failed", frame);
         }
 
     }

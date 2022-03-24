@@ -15,6 +15,7 @@ import net.ssehub.teaching.exercise_submitter.lib.submission.SubmissionResult;
 import net.ssehub.teaching.exercise_submitter.standalone.StandaloneSubmitter;
 import net.ssehub.teaching.exercise_submitter.standalone.components.ResultPanel;
 import net.ssehub.teaching.exercise_submitter.standalone.exception.ExceptionDialog;
+import net.ssehub.teaching.exercise_submitter.standalone.exception.JobResultException;
 import net.ssehub.teaching.exercise_submitter.standalone.jobs.IRunnableJob;
 import net.ssehub.teaching.exercise_submitter.standalone.jobs.Job;
 import net.ssehub.teaching.exercise_submitter.standalone.jobs.JobResult;
@@ -105,7 +106,7 @@ public class UploadSubmission {
            
             
         } else {
-            ExceptionDialog.createExceptionDialog("Submission failed", null);
+            JobResultException.handleSubmissionException(job.getJobResult(), "Submission failed", null);
         }
     }
     
