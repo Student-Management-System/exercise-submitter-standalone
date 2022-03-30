@@ -119,7 +119,7 @@ public class LoginFrame extends JFrame {
         gbctxtPassword.gridy = 3;
         loginPane.add(txtPassword, gbctxtPassword);
         
-        this.createKeyListenerEvents(txtUsername, txtPassword, listener); 
+        this.createKeyListenerEvents(txtUsername, txtPassword, listener, this); 
     }
     /**
      * Create the key listener to catch changes in the textboxes.
@@ -127,8 +127,10 @@ public class LoginFrame extends JFrame {
      * @param txtUsername
      * @param txtPassword
      * @param listener
+     * @param frame
      */
-    private void createKeyListenerEvents(JTextField txtUsername, JPasswordField txtPassword, LoginListener listener) {
+    private void createKeyListenerEvents(JTextField txtUsername,
+            JPasswordField txtPassword, LoginListener listener, LoginFrame frame) {
         txtUsername.addKeyListener(new KeyListener() {
             
             @Override
@@ -140,7 +142,11 @@ public class LoginFrame extends JFrame {
             public void keyPressed(KeyEvent event) {}
 
             @Override
-            public void keyReleased(KeyEvent event) {}
+            public void keyReleased(KeyEvent event) {
+                if (event.getKeyChar() == '\n') {
+                    listener.login(frame);
+                }
+            }
             
         });
         txtPassword.addKeyListener(new KeyListener() {
@@ -159,7 +165,11 @@ public class LoginFrame extends JFrame {
             public void keyReleased(KeyEvent event) {  }
             
             @Override
-            public void keyPressed(KeyEvent event) {}
+            public void keyPressed(KeyEvent event) {
+                if (event.getKeyChar() == '\n') {
+                    listener.login(frame);
+                }
+            }
         });
     }
     
