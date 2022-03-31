@@ -34,7 +34,7 @@ public class ResultPanel extends JPanel {
         //TODO: better design
         JPanel northpanel = new JPanel(new FlowLayout());
         
-        JLabel label = new JLabel("Server Return:");
+        JLabel label = new JLabel("");
         label.putClientProperty("FlatLaf.styleClass", "h3");
         lblSubmissionStatus = new JLabel("");
         lblSubmissionStatus.putClientProperty("FlatLaf.styleClass", "h3");
