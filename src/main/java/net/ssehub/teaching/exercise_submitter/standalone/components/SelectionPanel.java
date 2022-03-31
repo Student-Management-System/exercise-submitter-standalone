@@ -23,6 +23,7 @@ import net.ssehub.teaching.exercise_submitter.standalone.components.tree.CustomT
 import net.ssehub.teaching.exercise_submitter.standalone.components.tree.CustomTreeCelItem.FileCategorie;
 import net.ssehub.teaching.exercise_submitter.standalone.components.tree.FileCounter;
 import net.ssehub.teaching.exercise_submitter.standalone.components.tree.FileFilter;
+import net.ssehub.teaching.exercise_submitter.standalone.listener.ResultListener;
 import net.ssehub.teaching.exercise_submitter.standalone.listener.SubmissionListener;
 
 /**
@@ -44,8 +45,9 @@ public class SelectionPanel extends JPanel {
      * Instantiates new SelectionPanel.
      * 
      * @param listener
+     * @param resultlistener
      */
-    public SelectionPanel(SubmissionListener listener) {
+    public SelectionPanel(SubmissionListener listener, ResultListener resultlistener) {
 
         JPanel top = new JPanel(new BorderLayout(5, 5));
 
@@ -58,6 +60,8 @@ public class SelectionPanel extends JPanel {
         listener.addPathSelectionListener((path) -> {
             if (path.isPresent()) {
                 filecounter.clear();
+                resultlistener.clearRows();
+                resultlistener.setResultMessage("");
                 setTree(createsNodesForDirectory(
                         new DefaultMutableTreeNode(""), path.orElseThrow().toFile(), filecounter));
             }

@@ -17,26 +17,33 @@ import net.ssehub.teaching.exercise_submitter.standalone.components.ResultPanel;
  */
 public class ResultListener {
     
-    private DefaultTableModel model;
+    private Optional<DefaultTableModel> model = Optional.empty();
     private Optional<JLabel> resultLabel = Optional.empty();
     /**
      * Creates an new instance of {@link ResultListener}.
-     * 
+     */
+    public ResultListener() {
+        
+    }
+    /**
+     * Sets the table model for the {@link ResultListener}.
      * @param model
      */
-    public ResultListener(DefaultTableModel model) {
-        this.model = model;
+    public void setModel(DefaultTableModel model) {
+        this.model = Optional.ofNullable(model);
     }
     /**
      * Clears the rows of the result table. Runs on the UI thread.
      * 
      */
     public void clearRows() {
-        SwingUtilities.invokeLater(() -> {
-            for (int i = 0; i < this.model.getRowCount(); i++) {
-                model.removeRow(i);
-            }            
-        });
+        if (model.isPresent()) {
+            SwingUtilities.invokeLater(() -> {
+                for (int i = 0; i < this.model.get().getRowCount(); i++) {
+                    model.get().removeRow(i);
+                }            
+            });
+        }
     }
     
     /**
@@ -45,11 +52,13 @@ public class ResultListener {
      * @param rows
      */
     public void addRows(String[][] rows) {
-        SwingUtilities.invokeLater(() -> {
-            for (String[] row : rows) {
-                model.addRow(row);
-            }
-        });
+        if (model.isPresent()) {
+            SwingUtilities.invokeLater(() -> {
+                for (String[] row : rows) {
+                    model.get().addRow(row);
+                }
+            });
+        }
     }
     /**
      * Sets the resultlabel as a parameter.

@@ -14,6 +14,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 
 import net.ssehub.teaching.exercise_submitter.standalone.listener.MenuListener;
+import net.ssehub.teaching.exercise_submitter.standalone.listener.ResultListener;
 import net.ssehub.teaching.exercise_submitter.standalone.listener.SubmissionListener;
 import net.ssehub.teaching.exercise_submitter.standalone.themes.ThemeManager;
 import net.ssehub.teaching.exercise_submitter.standalone.themes.ThemeManager.Theme;
@@ -42,10 +43,12 @@ public class MainFrame extends JFrame {
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(MainFrame.class.getResource("/components/logo.png")));
         SubmissionListener listener = new SubmissionListener();
         
-        JPanel left = new JPanel(new BorderLayout());
-        JPanel right = new ResultPanel();
+        ResultListener resultlistener = new ResultListener();
         
-        left.add(new SelectionPanel(listener), BorderLayout.CENTER);
+        JPanel left = new JPanel(new BorderLayout());
+        JPanel right = new ResultPanel(resultlistener);
+        
+        left.add(new SelectionPanel(listener, resultlistener), BorderLayout.CENTER);
         left.add(new SubmissionPanel(listener), BorderLayout.SOUTH);
         
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, left, right);

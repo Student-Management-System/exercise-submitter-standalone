@@ -153,12 +153,14 @@ public class LoginFrame extends JFrame {
             
             @Override
             public void keyTyped(KeyEvent event) {
-                char[] password = new char[txtPassword.getPassword().length + 1];
-                for (int i = 0; i < txtPassword.getPassword().length; i++) {
-                    password[i] = txtPassword.getPassword()[i];
+                if (event.getKeyChar() != '\n') {
+                    char[] password = new char[txtPassword.getPassword().length + 1];
+                    for (int i = 0; i < txtPassword.getPassword().length; i++) {
+                        password[i] = txtPassword.getPassword()[i];
+                    }
+                    password[password.length - 1] = event.getKeyChar();
+                    listener.setPassword(password);
                 }
-                password[password.length - 1] = event.getKeyChar();
-                listener.setPassword(password);
             }
             
             @Override

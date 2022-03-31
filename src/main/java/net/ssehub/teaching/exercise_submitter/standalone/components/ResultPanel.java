@@ -28,8 +28,9 @@ public class ResultPanel extends JPanel {
 
     /**
      * Instantiates a new result panel.
+     * @param listener
      */
-    public ResultPanel() {
+    public ResultPanel(ResultListener listener) {
         //TODO: better design
         JPanel northpanel = new JPanel(new FlowLayout());
         
@@ -43,13 +44,9 @@ public class ResultPanel extends JPanel {
         northpanel.add(lblSubmissionStatus);
         add(northpanel, BorderLayout.NORTH);
         
-        
-        
         table = new JTable();
         
-        DefaultTableModel model = createTableColumns();
-        
-        listener = new ResultListener(model);
+        listener.setModel(createTableColumns());
         listener.setResultLabel(lblSubmissionStatus);
         
         UploadSubmission.setResultListener(listener);
