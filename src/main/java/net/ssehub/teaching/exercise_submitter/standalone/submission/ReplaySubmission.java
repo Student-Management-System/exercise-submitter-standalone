@@ -72,7 +72,7 @@ public class ReplaySubmission {
                         selectedPath = Optional.ofNullable(file.toPath());
                         if (selectedPath.isPresent()) {
                             copyFiles(tempFile.toPath(),  new File(selectedPath.get().toFile(),
-                                    "Submission" + version.getTimestamp().toEpochMilli()).toPath());
+                                    assignment.getName() + "_" + version.getTimestamp().toString()).toPath());
                             result.setOutput(true);
                         } else {
                             result.setOutput(false);

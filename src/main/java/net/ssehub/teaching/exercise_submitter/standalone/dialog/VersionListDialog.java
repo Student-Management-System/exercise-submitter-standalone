@@ -2,6 +2,7 @@ package net.ssehub.teaching.exercise_submitter.standalone.dialog;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.time.ZoneId;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -104,7 +105,7 @@ public class VersionListDialog extends Dialog<Version> {
     private Object[][] convertListToArray() {
         Object[][] result = new Object[this.versions.size()][2];
         for (int i = 0; i < result.length; i++) {
-            result[i][0] = versions.get(i).getTimestamp().toString();
+            result[i][0] = versions.get(i).getTimestamp().atZone(ZoneId.systemDefault()).toString();
             result[i][1] = versions.get(i).getAuthor();
         }
         return result;

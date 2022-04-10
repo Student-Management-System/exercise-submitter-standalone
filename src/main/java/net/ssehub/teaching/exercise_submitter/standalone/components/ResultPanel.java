@@ -1,6 +1,7 @@
 package net.ssehub.teaching.exercise_submitter.standalone.components;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.FlowLayout;
 
 import javax.swing.JLabel;
@@ -8,6 +9,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
 
 import net.ssehub.teaching.exercise_submitter.standalone.listener.ResultListener;
 import net.ssehub.teaching.exercise_submitter.standalone.submission.UploadSubmission;
@@ -44,7 +47,22 @@ public class ResultPanel extends JPanel {
         northpanel.add(lblSubmissionStatus);
         add(northpanel, BorderLayout.NORTH);
         
-        table = new JTable();
+        table = new JTable() {
+
+            private static final long serialVersionUID = 1L;
+            @Override
+            public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+                Component component = super.prepareRenderer(renderer, row, column);
+                int rendererWidth = component.getPreferredSize().width;
+                TableColumn tableColumn = getColumnModel().getColumn(column);
+                tableColumn.setPreferredWidth(Math.max(rendererWidth + getIntercellSpacing().width, 
+                        tableColumn.getPreferredWidth()));
+                return component;
+            }
+            
+        };
+        
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         
         listener.setModel(createTableColumns());
         listener.setResultLabel(lblSubmissionStatus);

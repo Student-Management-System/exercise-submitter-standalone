@@ -106,8 +106,8 @@ public class SelectionPanel extends JPanel {
      */
     private void createButtonAction(SubmissionListener listener, JTextField pathField, JButton button) {
         button.addActionListener(e -> {
-        
-            Optional<Path> dialogPath = this.openFileDialog();
+            Optional<String> defaultPath = Optional.ofNullable(pathField.getText());
+            Optional<Path> dialogPath = this.openFileDialog(defaultPath);
             listener.setSelectedPath(dialogPath.isPresent() 
                     ? dialogPath.get().toString() : "No Dir selected");
             if (dialogPath.isPresent()) {
@@ -176,11 +176,17 @@ public class SelectionPanel extends JPanel {
     /**
      * Opens the {@see #JFileChooser}.
      * 
+     * @param defaultpath
      * @return the Path as an Optional.
      */
-    private Optional<Path> openFileDialog() {
+    private Optional<Path> openFileDialog(Optional<String> defaultpath) {
         Optional<Path> selectedPath = Optional.empty();
-        JFileChooser fileChooser = new JFileChooser();
+        JFileChooser fileChooser = null;
+        if (defaultpath.isPresent()) {
+            fileChooser = new JFileChooser(defaultpath.get());
+        } else {
+            fileChooser = new JFileChooser();
+        }
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         int option = fileChooser.showOpenDialog(this);
         if (option == JFileChooser.APPROVE_OPTION) {

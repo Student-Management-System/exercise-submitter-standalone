@@ -126,6 +126,8 @@ public class UploadSubmission {
                 rows[i][2] = problems.get(i).getFile().orElse(new File("")).toString();                     
             }            
             listener.get().addRows(rows);
+        } else if (listener.isPresent()) {
+            listener.get().clearRows();
         }
         
     }

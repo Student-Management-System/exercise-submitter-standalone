@@ -127,11 +127,11 @@ public class CompareSubmission {
         if (job.getJobResult().hasSuceeded()) {
             if (job.getJobResult().getOutput().get()) {
                 SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(frame,
-                        "Your local dir and the current version on the server are the SAME", "Success!",
+                        "Your local directory and the current version on the server are the SAME", "Success!",
                         JOptionPane.INFORMATION_MESSAGE));
             } else {
                 SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(frame,
-                        "Your local dir and the current version on the server are NOT the same", "Warning!",
+                        "Your local directory and the current version on the server are NOT the same", "Warning!",
                         JOptionPane.WARNING_MESSAGE));
             }
         } else {
