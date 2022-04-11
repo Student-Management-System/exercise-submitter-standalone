@@ -7,6 +7,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -72,7 +74,8 @@ public class ReplaySubmission {
                         selectedPath = Optional.ofNullable(file.toPath());
                         if (selectedPath.isPresent()) {
                             copyFiles(tempFile.toPath(),  new File(selectedPath.get().toFile(),
-                                    assignment.getName() + "_" + version.getTimestamp().toString()).toPath());
+                                    assignment.getName() + "_" + version.getTimestamp().atZone(ZoneId.systemDefault())
+                                    .format(DateTimeFormatter.ofPattern("dd-MM-yyyy-HH-mm-ss"))).toPath());
                             result.setOutput(true);
                         } else {
                             result.setOutput(false);

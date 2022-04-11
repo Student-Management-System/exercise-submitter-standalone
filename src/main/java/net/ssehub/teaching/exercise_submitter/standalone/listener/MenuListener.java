@@ -5,11 +5,13 @@ import java.util.Optional;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import net.ssehub.teaching.exercise_submitter.lib.data.Assignment;
 import net.ssehub.teaching.exercise_submitter.lib.replay.Replayer.Version;
 import net.ssehub.teaching.exercise_submitter.standalone.components.MainFrame;
 import net.ssehub.teaching.exercise_submitter.standalone.dialog.DialogResult;
 import net.ssehub.teaching.exercise_submitter.standalone.dialog.IDialogCallback;
 import net.ssehub.teaching.exercise_submitter.standalone.submission.CompareSubmission;
+import net.ssehub.teaching.exercise_submitter.standalone.submission.ListAssignments;
 import net.ssehub.teaching.exercise_submitter.standalone.submission.ListVersions;
 import net.ssehub.teaching.exercise_submitter.standalone.submission.ReplaySubmission;
 
@@ -42,22 +44,32 @@ public class MenuListener {
      * 
      * @param frame
      */
-    public void openListVersion(MainFrame frame) {     
-        if (listener.isPresent()) {
-            IDialogCallback<Version> callback = new IDialogCallback<Version>() {
-                
-                @Override
-                public void run(DialogResult<Version> result) {
-                 
+    public void openListVersion(MainFrame frame) {  
+        IDialogCallback<Assignment> assignmentCallback = new IDialogCallback<Assignment>() {
+       
+            @Override
+            public void run(DialogResult<Assignment> result) {
+              
+                IDialogCallback<Version> callback = new IDialogCallback<Version>() {
                     
-                }
-            };
+                    @Override
+                    public void run(DialogResult<Version> result) {
+                     
+                        
+                    }
+                };
+                
+                
+                ListVersions listVersion = new ListVersions(result.getResult().get(),
+                        frame, callback);
+                listVersion.startAsyncAndDisplay();
+
+            }
+        };
             
-            
-            ListVersions listVersion = new ListVersions( listener.get().currentAssignment.get(),
-                    frame, callback);  
-            listVersion.startAsyncAndDisplay();
-        }
+        ListAssignments assignments = new ListAssignments(assignmentCallback, frame);  
+        assignments.startAsync();
+        
     }
     /**
      * Download a version of a selected assignment from a group.
@@ -65,35 +77,45 @@ public class MenuListener {
      * @param mainFrame
      */
     public void downloadSubmission(MainFrame mainFrame) {
-        if (listener.isPresent()) {
+        
+        IDialogCallback<Assignment> assignmentCallback = new IDialogCallback<Assignment>() {
             
-            IDialogCallback<Version> callback = new IDialogCallback<Version>() {
-
-                @Override
-                public void run(DialogResult<Version> result) {
-                    if (result.getAction() == DialogResult.UserAction.OK && result.getResult().isPresent()) {
-                        ReplaySubmission replay = new ReplaySubmission(listener.get().currentAssignment.get(), 
-                                result.getResult().get(), mainFrame);  
-                        replay.startAsyncReplay();
-                    } else { 
-                 
-                            if (result.getAction() == DialogResult.UserAction.CANCEL) {
-                                JOptionPane.showMessageDialog(mainFrame, 
-                                           "Download submission canceled!", "Warning!" , JOptionPane.WARNING_MESSAGE);
-                            }  else if (result.getResult().isEmpty()) {
-                                JOptionPane.showMessageDialog(mainFrame, 
-                                        "Download submission canceled!: No version selected",
-                                        "Warning!" , JOptionPane.WARNING_MESSAGE);
-                            }
+            @Override
+            public void run(DialogResult<Assignment> result) {
+        
+            
+                IDialogCallback<Version> callback = new IDialogCallback<Version>() {
+    
+                    @Override
+                    public void run(DialogResult<Version> result) {
+                        if (result.getAction() == DialogResult.UserAction.OK && result.getResult().isPresent()) {
+                            ReplaySubmission replay = new ReplaySubmission(listener.get().currentAssignment.get(), 
+                                    result.getResult().get(), mainFrame);  
+                            replay.startAsyncReplay();
+                        } else { 
+                     
+                                if (result.getAction() == DialogResult.UserAction.CANCEL) {
+                                    JOptionPane.showMessageDialog(mainFrame, 
+                                               "Download submission canceled!", "Warning!" 
+                                               , JOptionPane.WARNING_MESSAGE);
+                                }  else if (result.getResult().isEmpty()) {
+                                    JOptionPane.showMessageDialog(mainFrame, 
+                                            "Download submission canceled!: No version selected",
+                                            "Warning!" , JOptionPane.WARNING_MESSAGE);
+                                }
+                        }
                     }
-                }
-            };
+                };
+                
+                ListVersions listVersions = new ListVersions(result.getResult().get(), mainFrame, callback);
+                listVersions.startAsyncAndDisplay();
             
-            ListVersions listVersions = new ListVersions(listener.get().currentAssignment.get(), mainFrame, callback);
-            listVersions.startAsyncAndDisplay();
+            }
+        };
+    
+        ListAssignments assignments = new ListAssignments(assignmentCallback, mainFrame);  
+        assignments.startAsync();
             
-        }
-       
     }
     /**
      * Compare the selected file ant the current file on the server if they are identical.

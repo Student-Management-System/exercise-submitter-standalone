@@ -1,9 +1,8 @@
 package net.ssehub.teaching.exercise_submitter.standalone.dialog;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.FlowLayout;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -11,61 +10,59 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
 
-import net.ssehub.teaching.exercise_submitter.lib.replay.Replayer.Version;
+import net.ssehub.teaching.exercise_submitter.lib.data.Assignment;
 import net.ssehub.teaching.exercise_submitter.standalone.dialog.DialogResult.UserAction;
 
 /**
- * Displays the Versions of a specific assignment.
+ * Dialog for displaying assignments in a table.
  * 
  * @author lukas
  *
  */
-public class VersionListDialog extends Dialog<Version> {
-    
-    private static final long serialVersionUID = 7078834232408235881L;
-    
-    private List<Version> versions;
+public class SelectAssignmentDialog extends Dialog<Assignment> {
+
+    private static final long serialVersionUID = -8590311679935875621L;
+
+    private List<Assignment> assignments;
     private JFrame frame;
-   
-    
+    private JTable table;
+
     /**
-     * Creates an instance of {@link VersionListDialog}.
+     * Create a new instance of {@link SelectAssignmentDialog}.
      * 
-     * @param versions
+     * @param assignments
      * @param frame
      * @param callback
      */
-    public VersionListDialog(List<Version> versions
-            , JFrame frame, IDialogCallback<Version> callback) {
+    public SelectAssignmentDialog(List<Assignment> assignments, JFrame frame, IDialogCallback<Assignment> callback) {
         super(frame, callback);
-        this.versions = versions;
+        this.assignments = assignments;
         this.frame = frame;
         this.createDialog();
     }
-    
+
     /**
      * Creates the Dialog.
-     * 
      */
     private void createDialog() {
-        
+
         setLocationRelativeTo(frame);
         setSize(475, 200);
-        setTitle("Versions Table");
-        
-        getContentPane().setLayout(new BorderLayout());
-        
+        setTitle("Select Assignment");
+
         JPanel contentPanel = new JPanel();
-        
+
         getContentPane().add(contentPanel, BorderLayout.CENTER);
-        
+
         createTable(contentPanel);
-        
+
         JPanel buttonPane = new JPanel();
         buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
         getContentPane().add(buttonPane, BorderLayout.SOUTH);
-        
+
         JButton okButton = new JButton("OK");
         okButton.addActionListener(event -> {
             getDialogResult().setUserAction(UserAction.OK);
@@ -73,46 +70,60 @@ public class VersionListDialog extends Dialog<Version> {
         });
         buttonPane.add(okButton);
         getRootPane().setDefaultButton(okButton);
-    
-    
+
         JButton cancelButton = new JButton("Cancel");
         cancelButton.addActionListener(event -> {
             getDialogResult().setUserAction(UserAction.CANCEL);
             doCallback();
         });
         buttonPane.add(cancelButton);
-        
+
     }
     /**
-     * Creates the table.
+     * Creates the table and fits the header column to the content.
      * 
      * @param contentPanel
      */
     private void createTable(JPanel contentPanel) {
         Object[][] data  = this.convertListToArray();
-        Object[] columnnames = {"Timestamp", "Author"};
-        JTable table = new JTable(data, columnnames);
+        Object[] columnnames = {"Name", "State"};
+        table = new JTable(data, columnnames) {
+
+            /**
+             * 
+             */
+            private static final long serialVersionUID = -5081497479703374256L;
+            
+            @Override
+            public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+                Component component = super.prepareRenderer(renderer, row, column);
+                int rendererWidth = component.getPreferredSize().width;
+                TableColumn tableColumn = getColumnModel().getColumn(column);
+                tableColumn.setPreferredWidth(Math.max(rendererWidth + getIntercellSpacing().width, 
+                        tableColumn.getPreferredWidth()));
+                return component;
+            }
+            
+        };
         table.getSelectionModel().addListSelectionListener(event -> {
-            getDialogResult().setResult(versions.get(table.getSelectedRow()));
+            getDialogResult().setResult(assignments.get(table.getSelectedRow()));
         });
         contentPanel.add(new JScrollPane(table));
     }
-    
     /**
-     * Converts the List to an Object[][] Array.
+     * Converts the assignment list to an rayy for {@link JTable}.
      * 
      * @return Object[][]
      */
     private Object[][] convertListToArray() {
-        Object[][] result = new Object[this.versions.size()][2];
+        Object[][] result = new Object[this.assignments.size()][2];
         for (int i = 0; i < result.length; i++) {
-            result[i][0] = versions.get(i).getTimestamp().atZone(
-                    ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
-            result[i][1] = versions.get(i).getAuthor();
+            result[i][0] = assignments.get(i).getName();
+            result[i][1] = assignments.get(i).getState();
         }
         return result;
         
     }
-   
+
 
 }

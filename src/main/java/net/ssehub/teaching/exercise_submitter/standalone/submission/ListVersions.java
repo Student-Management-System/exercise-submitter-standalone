@@ -54,8 +54,8 @@ public class ListVersions {
             @Override
             public void run(JobResult<List<Version>, Exception> result) {
                 try  {
-                    result.setOutput(StandaloneSubmitter.getHandler().getManager().getReplayer(assignment)
-                            .getVersions());
+                    result.setOutput(StandaloneSubmitter.getHandler().getManager()
+                            .getReplayer(assignment).getVersions());
                 } catch (ApiException | IllegalArgumentException | ReplayException e) {
                     result.setException(e);
                 }

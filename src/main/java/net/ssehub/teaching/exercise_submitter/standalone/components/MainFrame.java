@@ -113,25 +113,15 @@ public class MainFrame extends JFrame {
         
         JMenuItem showVersion = new JMenuItem("Show Versions"); 
         showVersion.addActionListener(e -> menuListener.openListVersion(this));
-        showVersion.setEnabled(false);
-        showVersion.setToolTipText("You need to select an assignment");
-        listener.addAssignmentSelectionListener(l -> { 
-            showVersion.setEnabled(l.isPresent());
-            showVersion.setToolTipText(l.isPresent() ? "Show Versions" : "You need to select an assignment");
-        });
+        showVersion.setEnabled(true);
+       
         
         submitMenu.add(showVersion);
         
         JMenuItem downloadSubmission = new JMenuItem("Download Submission");
         downloadSubmission.addActionListener(e -> menuListener.downloadSubmission(this));
-        downloadSubmission.setEnabled(false);
-        downloadSubmission.setToolTipText("You need to select an assignment");
-        listener.addAssignmentSelectionListener(l -> {
-            downloadSubmission.setEnabled(l.isPresent());
-            downloadSubmission.setToolTipText(l.isPresent() 
-                    ? "Download Submission" : "You need to select an assignment");
-        });
-            
+        downloadSubmission.setEnabled(true);
+       
         
         submitMenu.add(downloadSubmission);
         
