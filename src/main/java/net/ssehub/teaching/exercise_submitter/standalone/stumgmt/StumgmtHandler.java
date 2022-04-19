@@ -62,13 +62,13 @@ public class StumgmtHandler {
         } catch (NetworkException e) {
             throw new ConnectionException(ConnectionException.NONETWORKCONNECTION);
         } catch (UserNotInCourseException e) {
-              
+            ExceptionDialog.createExceptionDialog(e.getLocalizedMessage(), null);
         } catch (AuthenticationException e) {          
             throw new LoginException(LoginException.USERNAMEORPASSWORDFALSE);
         } catch (ApiException e) {
-            
+            ExceptionDialog.createExceptionDialog(e.getLocalizedMessage(), null);
         } catch (IOException e) {
-          
+            ExceptionDialog.createExceptionDialog(e.getLocalizedMessage(), null);
         }
         
         
