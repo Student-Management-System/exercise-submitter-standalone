@@ -103,6 +103,10 @@ public class SelectAssignmentDialog extends Dialog<Assignment> {
                         tableColumn.getPreferredWidth()));
                 return component;
             }
+            @Override
+            public boolean editCellAt(int row, int column, java.util.EventObject evento) {
+                return false;
+            }
             
         };
         table.getSelectionModel().addListSelectionListener(event -> {
