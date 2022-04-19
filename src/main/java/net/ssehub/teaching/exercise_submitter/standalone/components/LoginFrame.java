@@ -42,7 +42,7 @@ public class LoginFrame extends JFrame {
         } catch (UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
-        this.setIconImage(Toolkit.getDefaultToolkit().getImage(MainFrame.class.getResource("/components/logo.png")));
+        this.setIconImage(Toolkit.getDefaultToolkit().getImage(MainFrame.class.getResource("logo.png")));
        
         
         this.setBounds(100, 100, 246, 249);

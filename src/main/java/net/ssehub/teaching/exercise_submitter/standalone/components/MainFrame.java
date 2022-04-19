@@ -40,7 +40,7 @@ public class MainFrame extends JFrame {
             e.printStackTrace();
         }
         
-        this.setIconImage(Toolkit.getDefaultToolkit().getImage(MainFrame.class.getResource("/components/logo.png")));
+        this.setIconImage(Toolkit.getDefaultToolkit().getImage(MainFrame.class.getResource("logo.png")));
         SubmissionListener listener = new SubmissionListener();
         
         ResultListener resultlistener = new ResultListener();
