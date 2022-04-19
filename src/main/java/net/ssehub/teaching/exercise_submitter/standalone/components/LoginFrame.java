@@ -8,18 +8,25 @@ import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-
+import net.ssehub.teaching.exercise_submitter.standalone.StandaloneSubmitterVersion;
 import net.ssehub.teaching.exercise_submitter.standalone.listener.LoginListener;
 import net.ssehub.teaching.exercise_submitter.standalone.themes.ThemeManager;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 
 
 /**
@@ -60,16 +67,15 @@ public class LoginFrame extends JFrame {
         this.createLoginPane(loginPane, listener);
         
         
-        this.add(loginPane, BorderLayout.CENTER);
+        getContentPane().add(loginPane, BorderLayout.CENTER);
        
-        
         
         JButton login = new JButton("Login");
         login.setEnabled(false);
         login.addActionListener(e -> listener.login(this)
         );
         listener.setButtonConsumer(e -> login.setEnabled(e));
-        this.add(login, BorderLayout.SOUTH);
+        getContentPane().add(login, BorderLayout.SOUTH);
         this.pack();
         
         this.getContentPane().add(loginPane);
@@ -77,7 +83,32 @@ public class LoginFrame extends JFrame {
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
         
+        createJMenubar();
         
+        
+    }
+    /**
+     * Creates the menubar.
+     */
+    private void createJMenubar() {
+        JMenuBar menuBar = new JMenuBar();
+        JMenu menu = new JMenu();
+        Icon image = new ImageIcon(MainFrame.class.getResource("information-line.png"));
+        menu.setIcon(image);
+        JMenuItem version = new JMenuItem("Version");
+        version.addActionListener(e -> createVersionMessageBox());
+        menu.add(version);
+        menuBar.add(menu);
+        setJMenuBar(menuBar);
+    }
+    /**
+     * Create a MessageBox which displays the current {@link StandaloneSubmitterVersion}.
+     */
+    private void createVersionMessageBox() {
+        SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(this, 
+                "Version: " +  StandaloneSubmitterVersion.VERSION,
+                "Version" , JOptionPane.INFORMATION_MESSAGE));
+    
     }
     /**
      * Creates the UI for the Loginform.
