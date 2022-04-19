@@ -7,6 +7,7 @@ import javax.swing.SwingUtilities;
 
 import net.ssehub.teaching.exercise_submitter.lib.data.Assignment;
 import net.ssehub.teaching.exercise_submitter.lib.replay.Replayer.Version;
+import net.ssehub.teaching.exercise_submitter.standalone.StandaloneSubmitterVersion;
 import net.ssehub.teaching.exercise_submitter.standalone.components.MainFrame;
 import net.ssehub.teaching.exercise_submitter.standalone.dialog.DialogResult;
 import net.ssehub.teaching.exercise_submitter.standalone.dialog.IDialogCallback;
@@ -136,11 +137,8 @@ public class MenuListener {
      * @param frame
      */
     public void openAbout(MainFrame frame) {
-        String version = "1.0";
-        String github = "www.test.de";
         SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(frame, 
-                                        "Version: " +  version + "\n"
-                                        + "Github: " + github,
+                                        "Version: " +  StandaloneSubmitterVersion.VERSION,
                                         "About" , JOptionPane.INFORMATION_MESSAGE));
         
     }
