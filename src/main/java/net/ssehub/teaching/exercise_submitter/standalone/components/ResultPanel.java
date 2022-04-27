@@ -89,6 +89,8 @@ public class ResultPanel extends JPanel {
         model.addColumn("Type");
         model.addColumn("Message");
         model.addColumn("File");
+        model.addColumn("Column");
+        model.addColumn("Line");
         return model;
     }
     /**
