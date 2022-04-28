@@ -60,6 +60,7 @@ public class VersionListDialog extends Dialog<Version> {
         getContentPane().setLayout(new BorderLayout());
         
         JPanel contentPanel = new JPanel();
+        contentPanel.setLayout(new BorderLayout());
         
         getContentPane().add(contentPanel, BorderLayout.CENTER);
         
@@ -116,7 +117,8 @@ public class VersionListDialog extends Dialog<Version> {
         table.getSelectionModel().addListSelectionListener(event -> {
             getDialogResult().setResult(versions.get(table.getSelectedRow()));
         });
-        contentPanel.add(new JScrollPane(table));
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        contentPanel.add(new JScrollPane(table), BorderLayout.CENTER);
     }
     
     /**

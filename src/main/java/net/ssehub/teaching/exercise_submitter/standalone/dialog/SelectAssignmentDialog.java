@@ -54,7 +54,8 @@ public class SelectAssignmentDialog extends Dialog<Assignment> {
         setTitle("Select Assignment");
 
         JPanel contentPanel = new JPanel();
-
+        contentPanel.setLayout(new BorderLayout());
+        
         getContentPane().add(contentPanel, BorderLayout.CENTER);
 
         createTable(contentPanel);
@@ -112,7 +113,8 @@ public class SelectAssignmentDialog extends Dialog<Assignment> {
         table.getSelectionModel().addListSelectionListener(event -> {
             getDialogResult().setResult(assignments.get(table.getSelectedRow()));
         });
-        contentPanel.add(new JScrollPane(table));
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        contentPanel.add(new JScrollPane(table), BorderLayout.CENTER);
     }
     /**
      * Converts the assignment list to an rayy for {@link JTable}.
