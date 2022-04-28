@@ -9,6 +9,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -53,6 +54,7 @@ public class MainFrame extends JFrame {
         
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, left, right);
         splitPane.setContinuousLayout(true);
+        splitPane.setResizeWeight(0.66);
 
         this.getContentPane().add(splitPane);
         
@@ -71,6 +73,7 @@ public class MainFrame extends JFrame {
         menu.add(themes);
         menu.add(help);
         this.pack();
+        SwingUtilities.invokeLater(() -> splitPane.setDividerLocation(0.33));
         this.setTitle("Standalone Exercise Submitter");
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
