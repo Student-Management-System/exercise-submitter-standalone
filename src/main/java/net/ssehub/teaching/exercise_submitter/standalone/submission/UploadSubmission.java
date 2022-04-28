@@ -121,11 +121,12 @@ public class UploadSubmission {
             listener.get().clearRows();
             String[][] rows = new String[problems.size()][5];
             for (int i = 0; i < problems.size(); i++) {
-                rows[i][0] = problems.get(i).getCheckName() + " " + problems.get(i).getSeverity().toString();
+                rows[i][0] = problems.get(i).getCheckName() + " " 
+                        + problems.get(i).getSeverity().toString().toLowerCase();
                 rows[i][1] = problems.get(i).getMessage();
                 rows[i][2] = problems.get(i).getFile().orElse(new File("")).toString(); 
-                rows[i][3] = Integer.toString(problems.get(i).getColumn().orElse(0));
-                rows[i][4] = Integer.toString(problems.get(i).getLine().orElse(0));
+                rows[i][3] = problems.get(i).getLine().map(e -> e.toString()).orElse("");
+                rows[i][4] = problems.get(i).getColumn().map(e -> e.toString()).orElse("");
             }            
             listener.get().addRows(rows);
         } else if (listener.isPresent()) {

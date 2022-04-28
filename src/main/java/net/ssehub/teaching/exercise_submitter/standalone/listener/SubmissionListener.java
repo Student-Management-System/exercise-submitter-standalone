@@ -69,8 +69,8 @@ public class SubmissionListener {
             // TODO: improve error message
         }
         
+        this.pathSelectionListener.stream().forEach(l -> l.accept(currentSelection));
         if (currentAssignment.isPresent()) {
-            this.pathSelectionListener.stream().forEach(l -> l.accept(currentSelection));
             this.pathAndAssignmentSelectionListener.stream().forEach(l ->
                 l.accept(currentSelection.isPresent() && currentAssignment.isPresent()));
         }

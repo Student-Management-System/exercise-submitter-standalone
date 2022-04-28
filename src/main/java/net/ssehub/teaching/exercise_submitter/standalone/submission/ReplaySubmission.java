@@ -75,7 +75,7 @@ public class ReplaySubmission {
                         if (selectedPath.isPresent()) {
                             copyFiles(tempFile.toPath(),  new File(selectedPath.get().toFile(),
                                     assignment.getName() + "_" + version.getTimestamp().atZone(ZoneId.systemDefault())
-                                    .format(DateTimeFormatter.ofPattern("dd-MM-yyyy-HH-mm-ss"))).toPath());
+                                    .format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss"))).toPath());
                             result.setOutput(true);
                         } else {
                             result.setOutput(false);
