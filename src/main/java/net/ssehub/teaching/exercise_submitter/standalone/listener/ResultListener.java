@@ -1,6 +1,8 @@
 package net.ssehub.teaching.exercise_submitter.standalone.listener;
 
 
+import java.awt.EventQueue;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 
 import javax.swing.JLabel;
@@ -8,6 +10,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 import net.ssehub.teaching.exercise_submitter.standalone.components.ResultPanel;
+import net.ssehub.teaching.exercise_submitter.standalone.exception.ExceptionDialog;
 
 /**
  * Handles the data on the {@link ResultPanel}.
@@ -38,11 +41,22 @@ public class ResultListener {
      */
     public void clearRows() {
         if (model.isPresent()) {
-            SwingUtilities.invokeLater(() -> {
-                for (int i = 0; i < this.model.get().getRowCount(); i++) {
-                    model.get().removeRow(i);
-                }            
-            });
+            try {
+                if (!EventQueue.isDispatchThread()) {
+                    SwingUtilities.invokeAndWait(() -> {
+                        for (int i = 0; i < this.model.get().getRowCount();) {
+                            model.get().removeRow(i);
+                        }            
+                    });
+                } else {
+                    for (int i = 0; i < this.model.get().getRowCount();) {
+                        model.get().removeRow(i);
+                    }    
+                }
+                    
+            } catch (InvocationTargetException | InterruptedException e) {
+                ExceptionDialog.createExceptionDialog("Cant clear resulttable", null);
+            }
         }
     }
     
