@@ -20,6 +20,8 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import net.ssehub.teaching.exercise_submitter.standalone.StandaloneSubmitterVersion;
 import net.ssehub.teaching.exercise_submitter.standalone.listener.LoginListener;
@@ -151,9 +153,10 @@ public class LoginFrame extends JFrame {
         loginPane.add(txtPassword, gbctxtPassword);
         
         this.createKeyListenerEvents(txtUsername, txtPassword, listener, this); 
+        createDocumentListenerEvents(txtUsername, txtPassword, listener);
     }
     /**
-     * Create the key listener to catch changes in the textboxes.
+     * Create the key listener to catch the enter key.
      * 
      * @param txtUsername
      * @param txtPassword
@@ -165,9 +168,7 @@ public class LoginFrame extends JFrame {
         txtUsername.addKeyListener(new KeyListener() {
             
             @Override
-            public void keyTyped(KeyEvent event) {
-                listener.setUsername(txtUsername.getText() + Character.toString(event.getKeyChar()));
-            }
+            public void keyTyped(KeyEvent event) {}
 
             @Override
             public void keyPressed(KeyEvent event) {}
@@ -183,25 +184,62 @@ public class LoginFrame extends JFrame {
         txtPassword.addKeyListener(new KeyListener() {
             
             @Override
-            public void keyTyped(KeyEvent event) {
-                if (event.getKeyChar() != '\n') {
-                    char[] password = new char[txtPassword.getPassword().length + 1];
-                    for (int i = 0; i < txtPassword.getPassword().length; i++) {
-                        password[i] = txtPassword.getPassword()[i];
-                    }
-                    password[password.length - 1] = event.getKeyChar();
-                    listener.setPassword(password);
-                }
-            }
+            public void keyTyped(KeyEvent event) {}
             
             @Override
-            public void keyReleased(KeyEvent event) {  }
+            public void keyReleased(KeyEvent event) {}
             
             @Override
             public void keyPressed(KeyEvent event) {
                 if (event.getKeyChar() == '\n') {
                     listener.login(frame);
                 }
+            }
+        });
+    }
+    /**
+     * Creates the documentlistener for catching changes in the textbox.
+     * 
+     * @param txtUsername
+     * @param txtPassword
+     * @param listener
+     */
+    private void createDocumentListenerEvents(JTextField txtUsername,
+            JPasswordField txtPassword, LoginListener listener) {
+        
+        txtUsername.getDocument().addDocumentListener(new DocumentListener() {
+            
+            @Override
+            public void removeUpdate(DocumentEvent event) {
+                listener.setUsername(txtUsername.getText());
+            }
+            
+            @Override
+            public void insertUpdate(DocumentEvent event) {
+                listener.setUsername(txtUsername.getText());
+                
+            }
+            
+            @Override
+            public void changedUpdate(DocumentEvent event) {
+                listener.setUsername(txtUsername.getText());
+            }
+        });
+        txtPassword.getDocument().addDocumentListener(new DocumentListener() {
+            
+            @Override
+            public void removeUpdate(DocumentEvent event) {
+                listener.setPassword(txtPassword.getPassword());
+            }
+            
+            @Override
+            public void insertUpdate(DocumentEvent event) {
+                listener.setPassword(txtPassword.getPassword());
+            }
+            
+            @Override
+            public void changedUpdate(DocumentEvent event) {
+                listener.setPassword(txtPassword.getPassword());
             }
         });
     }
