@@ -2,6 +2,7 @@ package net.ssehub.teaching.exercise_submitter.standalone.exception;
 
 import javax.swing.JFrame;
 
+import net.ssehub.teaching.exercise_submitter.lib.student_management_system.GroupNotFoundException;
 import net.ssehub.teaching.exercise_submitter.standalone.jobs.JobResult;
 
 
@@ -12,6 +13,8 @@ import net.ssehub.teaching.exercise_submitter.standalone.jobs.JobResult;
  *
  */
 public class JobResultException {
+    
+    
     
     /**
      * This method handles exception that comes from replaying, uploading , comparing the Submission.
@@ -26,7 +29,14 @@ public class JobResultException {
         handleSubmissionException(JobResult<Output, Exceptiontype> result, String message, JFrame frame) {
         if (result.getException().isPresent()) {
             Exception ex = (Exception) result.getException().get();
-            ExceptionDialog.createExceptionDialog(message + "\nReason: " + ex.getLocalizedMessage(), frame);
+            String errormessage = message + "\nReason: " + ex.getLocalizedMessage();
+            
+            if (ex instanceof GroupNotFoundException) {
+                ExceptionDialog.createExceptionDialog(message + "\nReason: "
+                         + "Check if you are registered in a group for this assignment", frame);
+            }
+            
+            ExceptionDialog.createExceptionDialog(errormessage, frame);
             
         } else {
             ExceptionDialog.createExceptionDialog("Downloading submission failed", frame);
