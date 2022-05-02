@@ -5,8 +5,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.ActionEvent;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -14,21 +13,19 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
 import net.ssehub.teaching.exercise_submitter.standalone.StandaloneSubmitterVersion;
 import net.ssehub.teaching.exercise_submitter.standalone.listener.LoginListener;
 import net.ssehub.teaching.exercise_submitter.standalone.themes.ThemeManager;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 
 
 /**
@@ -42,6 +39,12 @@ public class LoginFrame extends JFrame {
    
     private static final long serialVersionUID = -2056964420650568007L;
 
+    private LoginListener listener;
+    
+    private JTextField username;
+    
+    private JPasswordField password;
+    
     /**
      * Instantiates a new {@link LoginFrame}.
      */
@@ -64,19 +67,15 @@ public class LoginFrame extends JFrame {
         
         JPanel loginPane = new JPanel(gridBagLayout);
         
-        LoginListener listener = new LoginListener();
+        listener = new LoginListener();
         
-        this.createLoginPane(loginPane, listener);
-        
+        createLoginPane(loginPane);        
         
         getContentPane().add(loginPane, BorderLayout.CENTER);
        
         
         JButton login = new JButton("Login");
-        login.setEnabled(false);
-        login.addActionListener(e -> listener.login(this)
-        );
-        listener.setButtonConsumer(e -> login.setEnabled(e));
+        login.addActionListener(this::login);
         getContentPane().add(login, BorderLayout.SOUTH);
         this.pack();
         
@@ -116,9 +115,8 @@ public class LoginFrame extends JFrame {
      * Creates the UI for the Loginform.
      * 
      * @param loginPane
-     * @param listener
      */
-    private void createLoginPane(JPanel loginPane, LoginListener listener) {
+    private void createLoginPane(JPanel loginPane) {
         JLabel lblUsername = new JLabel("Username:");
         lblUsername.putClientProperty("FlatLaf.styleClass", "h2");
         GridBagConstraints gbclblUsername = new GridBagConstraints();
@@ -127,14 +125,15 @@ public class LoginFrame extends JFrame {
         gbclblUsername.gridy = 1;
         loginPane.add(lblUsername, gbclblUsername);
         
-        JTextField txtUsername = new JTextField();
+        username = new JTextField();
         GridBagConstraints gbctxtUsername = new GridBagConstraints();
         gbctxtUsername.insets = new Insets(0, 0, 5, 0);
         gbctxtUsername.fill = GridBagConstraints.HORIZONTAL;
         gbctxtUsername.gridx = 3;
         gbctxtUsername.gridy = 1;
-        loginPane.add(txtUsername, gbctxtUsername);
-        txtUsername.setColumns(10);
+        loginPane.add(username, gbctxtUsername);
+        username.setColumns(10);
+        username.addActionListener(this::login);
         
         JLabel lblPassword = new JLabel("Password:");
         lblPassword.putClientProperty("FlatLaf.styleClass", "h2");
@@ -144,106 +143,25 @@ public class LoginFrame extends JFrame {
         gbclblPassword.gridy = 3;
         loginPane.add(lblPassword, gbclblPassword);
         
-        JPasswordField txtPassword = new JPasswordField();
+        password = new JPasswordField();
         GridBagConstraints gbctxtPassword = new GridBagConstraints();
         gbctxtPassword.insets = new Insets(0, 0, 5, 0);
         gbctxtPassword.fill = GridBagConstraints.HORIZONTAL;
         gbctxtPassword.gridx = 3;
         gbctxtPassword.gridy = 3;
-        loginPane.add(txtPassword, gbctxtPassword);
-        
-        this.createKeyListenerEvents(txtUsername, txtPassword, listener, this); 
-        createDocumentListenerEvents(txtUsername, txtPassword, listener);
-    }
-    /**
-     * Create the key listener to catch the enter key.
-     * 
-     * @param txtUsername
-     * @param txtPassword
-     * @param listener
-     * @param frame
-     */
-    private void createKeyListenerEvents(JTextField txtUsername,
-            JPasswordField txtPassword, LoginListener listener, LoginFrame frame) {
-        txtUsername.addKeyListener(new KeyListener() {
-            
-            @Override
-            public void keyTyped(KeyEvent event) {}
-
-            @Override
-            public void keyPressed(KeyEvent event) {}
-
-            @Override
-            public void keyReleased(KeyEvent event) {
-                if (event.getKeyChar() == '\n') {
-                    listener.login(frame);
-                }
-            }
-            
-        });
-        txtPassword.addKeyListener(new KeyListener() {
-            
-            @Override
-            public void keyTyped(KeyEvent event) {}
-            
-            @Override
-            public void keyReleased(KeyEvent event) {}
-            
-            @Override
-            public void keyPressed(KeyEvent event) {
-                if (event.getKeyChar() == '\n') {
-                    listener.login(frame);
-                }
-            }
-        });
-    }
-    /**
-     * Creates the documentlistener for catching changes in the textbox.
-     * 
-     * @param txtUsername
-     * @param txtPassword
-     * @param listener
-     */
-    private void createDocumentListenerEvents(JTextField txtUsername,
-            JPasswordField txtPassword, LoginListener listener) {
-        
-        txtUsername.getDocument().addDocumentListener(new DocumentListener() {
-            
-            @Override
-            public void removeUpdate(DocumentEvent event) {
-                listener.setUsername(txtUsername.getText());
-            }
-            
-            @Override
-            public void insertUpdate(DocumentEvent event) {
-                listener.setUsername(txtUsername.getText());
-                
-            }
-            
-            @Override
-            public void changedUpdate(DocumentEvent event) {
-                listener.setUsername(txtUsername.getText());
-            }
-        });
-        txtPassword.getDocument().addDocumentListener(new DocumentListener() {
-            
-            @Override
-            public void removeUpdate(DocumentEvent event) {
-                listener.setPassword(txtPassword.getPassword());
-            }
-            
-            @Override
-            public void insertUpdate(DocumentEvent event) {
-                listener.setPassword(txtPassword.getPassword());
-            }
-            
-            @Override
-            public void changedUpdate(DocumentEvent event) {
-                listener.setPassword(txtPassword.getPassword());
-            }
-        });
+        loginPane.add(password, gbctxtPassword);
+        password.addActionListener(this::login);
     }
     
+    /**
+     * Performs the login.
+     * 
+     * @param e Ignored.
+     */
+    private void login(ActionEvent e) {
+        listener.setUsername(username.getText());
+        listener.setPassword(password.getPassword());
+        listener.login(this);
+    }
     
-   
 }

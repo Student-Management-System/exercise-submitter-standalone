@@ -1,7 +1,6 @@
 package net.ssehub.teaching.exercise_submitter.standalone.listener;
 
 import java.util.Optional;
-import java.util.function.Consumer;
 
 import javax.swing.JFrame;
 
@@ -28,9 +27,6 @@ public class LoginListener {
     
     private Optional<JFrame> frame = Optional.empty();
     
-    private Optional<Consumer<Boolean>> buttonConsumer = Optional.empty();
-    
-    
     /**
      * Instantiates a new login listener.
      */
@@ -45,7 +41,6 @@ public class LoginListener {
      */
     public void setUsername(String username) {
         this.currentUsername = Optional.ofNullable(username);
-        this.checkIfBothAreFilled();
     }
     
     /**
@@ -55,28 +50,6 @@ public class LoginListener {
      */
     public void setPassword(char[] password) {
         this.currentPassword = Optional.ofNullable(password);
-        this.checkIfBothAreFilled();
-    }
-    
-    
-    /**
-     * Sets the button consumer.
-     *
-     * @param buttonConsumer the new button consumer
-     */
-    public void setButtonConsumer(Consumer<Boolean> buttonConsumer) {
-        this.buttonConsumer = Optional.ofNullable(buttonConsumer);
-    }
-    
-    /**
-     * Check if both are filled.
-     */
-    private void checkIfBothAreFilled() {
-        if (this.buttonConsumer.isPresent() && this.currentUsername.isPresent() && this.currentPassword.isPresent()) {
-            boolean result = !this.currentUsername.get().equals("") && this.currentPassword.get().length > 0;
-            
-            this.buttonConsumer.get().accept(result);
-        }
     }
     
     /**
