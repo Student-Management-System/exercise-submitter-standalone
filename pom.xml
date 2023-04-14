@@ -3,7 +3,7 @@
 
     <groupId>net.ssehub.teaching</groupId>
     <artifactId>exercise-submitter-standalone</artifactId>
-    <version>3.2.1-SNAPSHOT</version>
+    <version>3.3.0-SNAPSHOT</version>
 
     <organization>
         <name>Software Systems Engineering, University of Hildesheim</name>
@@ -47,20 +47,20 @@
 
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
+                <version>3.11.0</version>
                 <configuration>
-                    <release>11</release>
+                    <release>17</release>
                 </configuration>
             </plugin>
 
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M5</version>
+                <version>3.0.0</version>
             </plugin>
 
             <plugin>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>3.0.0-M5</version>
+                <version>3.0.0</version>
                 <executions>
                     <execution>
                         <goals>
@@ -74,7 +74,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.7</version>
+                <version>0.8.9</version>
                 <executions>
                     <execution>
                         <goals>
@@ -93,7 +93,7 @@
 
             <plugin>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>3.1.2</version>
+                <version>3.2.1</version>
                 <configuration>
                     <configLocation>sse-checkstyle.xml</configLocation>
                     <encoding>UTF-8</encoding>
@@ -116,14 +116,14 @@
                     <dependency>
                         <groupId>com.puppycrawl.tools</groupId>
                         <artifactId>checkstyle</artifactId>
-                        <version>9.2</version>
+                        <version>10.9.3</version>
                     </dependency>
                 </dependencies>
             </plugin>
 
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>3.2.0</version>
+                <version>3.3.0</version>
                 <configuration>
                     <archive>
                         <manifest>
@@ -135,7 +135,7 @@
 
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.3.0</version>
+                <version>3.5.0</version>
                 <executions>
                     <execution>
                         <id>runnable-jar</id>
@@ -180,13 +180,13 @@
         <dependency>
             <groupId>net.ssehub.teaching.exercise_submitter</groupId>
             <artifactId>exercise-submitter-lib</artifactId>
-            <version>1.0.0</version>
+            <version>1.1.0</version>
         </dependency>
 
         <dependency>
             <groupId>com.formdev</groupId>
             <artifactId>flatlaf</artifactId>
-            <version>2.0</version>
+            <version>3.1</version>
         </dependency>
     </dependencies>
 
