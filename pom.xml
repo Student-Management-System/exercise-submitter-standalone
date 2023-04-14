@@ -3,7 +3,7 @@
 
     <groupId>net.ssehub.teaching</groupId>
     <artifactId>exercise-submitter-standalone</artifactId>
-    <version>3.3.0</version>
+    <version>3.3.1-SNAPSHOT</version>
 
     <organization>
         <name>Software Systems Engineering, University of Hildesheim</name>
