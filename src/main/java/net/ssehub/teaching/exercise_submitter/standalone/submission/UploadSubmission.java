@@ -63,7 +63,7 @@ public class UploadSubmission {
                         .getHandler()
                         .getManager()
                         .getSubmitter(assignment)
-                        .submit(dirPath.toFile()));
+                        .submit(dirPath.toFile())); // Todo: add filters
                 } catch (IllegalArgumentException | SubmissionException | ApiException e) {
                     result.setException(e);
                 }

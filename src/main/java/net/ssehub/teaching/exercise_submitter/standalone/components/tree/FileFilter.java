@@ -1,8 +1,9 @@
 package net.ssehub.teaching.exercise_submitter.standalone.components.tree;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import net.ssehub.teaching.exercise_submitter.standalone.stumgmt.StumgmtHandler;
+
+import java.io.IOException;
+import java.util.*;
 
 /**
  * This filter can filter specific file extensions.
@@ -28,8 +29,17 @@ public class FileFilter {
      * 
      */
     private void createFilterWords() {
-        filtered.add(".class");
+        Properties prop = new Properties();
+        try {
+            prop.load(StumgmtHandler.class.getResourceAsStream("config.properties"));
+        } catch (IOException e) {
+            System.out.println("Could not load config file");
+        }
+        String filterExpressions = prop.getProperty("excluded");
+        filtered.addAll(Arrays.asList(filterExpressions.split(",")));
+        // Todo: current filter does not change which files are submitted, only which are displayed
     }
+
     /**
      * Checks if an file extension is not in the {@link #filtered} list.
      * 
@@ -40,7 +50,4 @@ public class FileFilter {
         return findword.isEmpty();
         
     }
-    
-    
-
 }
