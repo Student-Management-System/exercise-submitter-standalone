@@ -34,8 +34,13 @@ public class FileFilter {
             prop.load(StumgmtHandler.class.getResourceAsStream("config.properties"));
         } catch (IOException e) {
             System.out.println("Could not load config file");
+            return;
         }
         String filterExpressions = prop.getProperty("excluded");
+        if (filterExpressions == null) {
+            System.out.println("Filter expressions not found");
+            return;
+        }
         filtered.addAll(Arrays.asList(filterExpressions.split(",")));
         // Todo: current filter does not change which files are submitted, only which are displayed
     }
