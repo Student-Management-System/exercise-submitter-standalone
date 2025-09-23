@@ -2,10 +2,12 @@ package net.ssehub.teaching.exercise_submitter.standalone.submission;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import javax.swing.JOptionPane;
+import javax.swing.JDialog;
 
 import net.ssehub.teaching.exercise_submitter.lib.data.Assignment;
 import net.ssehub.teaching.exercise_submitter.lib.student_management_system.ApiException;
@@ -14,6 +16,7 @@ import net.ssehub.teaching.exercise_submitter.lib.submission.SubmissionException
 import net.ssehub.teaching.exercise_submitter.lib.submission.SubmissionResult;
 import net.ssehub.teaching.exercise_submitter.standalone.StandaloneSubmitter;
 import net.ssehub.teaching.exercise_submitter.standalone.components.ResultPanel;
+import net.ssehub.teaching.exercise_submitter.standalone.dialog.SubmissionFilesDialog;
 import net.ssehub.teaching.exercise_submitter.standalone.exception.ExceptionDialog;
 import net.ssehub.teaching.exercise_submitter.standalone.exception.JobResultException;
 import net.ssehub.teaching.exercise_submitter.standalone.jobs.IRunnableJob;
@@ -97,6 +100,10 @@ public class UploadSubmission {
                 JOptionPane.showMessageDialog(null, 
                         "Submission was accepted", "Success!" , JOptionPane.INFORMATION_MESSAGE);
                 changeResultLabel("Submission was accepted");
+                SubmissionFilesDialog dialog = new SubmissionFilesDialog(new ArrayList<>(),  null);
+                dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+                dialog.setVisible(true);
+                // ToDo: Add actually submitted files to the display list.
             } else {
                 ExceptionDialog.createExceptionDialog(
                         "Submission is NOT accepted see the result on the right side", null);
