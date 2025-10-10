@@ -14,10 +14,13 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 
+import net.ssehub.teaching.exercise_submitter.lib.data.Course;
+import net.ssehub.teaching.exercise_submitter.lib.student_management_system.ApiException;
+import net.ssehub.teaching.exercise_submitter.standalone.StandaloneSubmitter;
+import net.ssehub.teaching.exercise_submitter.standalone.dialog.IDialogCallback;
 import net.ssehub.teaching.exercise_submitter.standalone.listener.MenuListener;
 import net.ssehub.teaching.exercise_submitter.standalone.listener.ResultListener;
 import net.ssehub.teaching.exercise_submitter.standalone.listener.SubmissionListener;
-import net.ssehub.teaching.exercise_submitter.standalone.stumgmt.ListCourses;
 import net.ssehub.teaching.exercise_submitter.standalone.themes.ThemeManager;
 import net.ssehub.teaching.exercise_submitter.standalone.themes.ThemeManager.Theme;
 
@@ -51,7 +54,8 @@ public class MainFrame extends JFrame {
         JPanel right = new ResultPanel(resultlistener);
         
         left.add(new SelectionPanel(listener, resultlistener), BorderLayout.CENTER);
-        left.add(new SubmissionPanel(listener), BorderLayout.SOUTH);
+        SubmissionPanel submissionPanel = new SubmissionPanel(listener);
+        left.add(submissionPanel, BorderLayout.SOUTH);
         
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, left, right);
         splitPane.setContinuousLayout(true);
@@ -67,7 +71,7 @@ public class MainFrame extends JFrame {
         JMenu submitMenu = createSubmitMenu(listener, menuListener);
         menu.add(submitMenu);
 
-        JMenu courses = createCourseMenu(menuListener);
+        JMenu courses = createCourseMenu(menuListener, submissionPanel);
         JMenu themes = createThemeMenu();
         JMenu help = createHelpMenu(menuListener);
 
@@ -158,7 +162,7 @@ public class MainFrame extends JFrame {
         return themesMenu;
     }
 
-    private JMenu createCourseMenu(MenuListener menuListener) {
+    private JMenu createCourseMenu(MenuListener menuListener, SubmissionPanel submissionPanel) {
         JMenu courseMenu = new JMenu("Courses");
         JMenuItem selectCourse = new JMenuItem("Select Course");
         selectCourse.addActionListener(e -> menuListener.openListCourses(this));

@@ -19,9 +19,11 @@ import java.util.Set;
  */
 public class ListCourses {
     private final JFrame frame;
+    private final IDialogCallback<Course> callback;
 
-    public ListCourses(JFrame frame) {
+    public ListCourses(JFrame frame, IDialogCallback<Course> callback) {
         this.frame = frame;
+        this.callback = callback;
     }
 
     /**
@@ -51,13 +53,6 @@ public class ListCourses {
             ExceptionDialog.createExceptionDialog(message, null);
             return;
         }
-        IDialogCallback<Course> callback = result -> {
-            try {
-                StandaloneSubmitter.getHandler().getManager().setCourse(result.getResult().get().getId());
-            } catch (ApiException e) {
-                System.err.println(e.getLocalizedMessage());
-            }
-        };
 
         SwingUtilities.invokeLater(() -> {
             Set<Course> courseSet = job.getJobResult().getOutput().get();

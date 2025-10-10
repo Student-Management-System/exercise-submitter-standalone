@@ -8,6 +8,8 @@ import javax.swing.SwingUtilities;
 import net.ssehub.teaching.exercise_submitter.lib.data.Assignment;
 import net.ssehub.teaching.exercise_submitter.lib.data.Course;
 import net.ssehub.teaching.exercise_submitter.lib.replay.Replayer.Version;
+import net.ssehub.teaching.exercise_submitter.lib.student_management_system.ApiException;
+import net.ssehub.teaching.exercise_submitter.standalone.StandaloneSubmitter;
 import net.ssehub.teaching.exercise_submitter.standalone.StandaloneSubmitterVersion;
 import net.ssehub.teaching.exercise_submitter.standalone.components.MainFrame;
 import net.ssehub.teaching.exercise_submitter.standalone.dialog.DialogResult;
@@ -146,7 +148,16 @@ public class MenuListener {
     }
 
     public void openListCourses(MainFrame frame) {
-        ListCourses courses = new ListCourses(frame);
+        IDialogCallback<Course> callback = result -> {
+            try {
+                Course course = result.getResult().get();
+                StandaloneSubmitter.getHandler().getManager().setCourse(course.getId());
+                frame.setTitle("Standalone Exercise Submitter: " + course.getName());
+            } catch (ApiException e) {
+                System.err.println(e.getLocalizedMessage());
+            }
+        };
+        ListCourses courses = new ListCourses(frame, callback);
         courses.startAsync();
     }
 }
