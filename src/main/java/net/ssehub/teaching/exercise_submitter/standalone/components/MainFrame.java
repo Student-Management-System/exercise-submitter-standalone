@@ -17,6 +17,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import net.ssehub.teaching.exercise_submitter.standalone.listener.MenuListener;
 import net.ssehub.teaching.exercise_submitter.standalone.listener.ResultListener;
 import net.ssehub.teaching.exercise_submitter.standalone.listener.SubmissionListener;
+import net.ssehub.teaching.exercise_submitter.standalone.stumgmt.ListCourses;
 import net.ssehub.teaching.exercise_submitter.standalone.themes.ThemeManager;
 import net.ssehub.teaching.exercise_submitter.standalone.themes.ThemeManager.Theme;
 
@@ -65,11 +66,12 @@ public class MainFrame extends JFrame {
         
         JMenu submitMenu = createSubmitMenu(listener, menuListener);
         menu.add(submitMenu);
-        
-        JMenu help = createHelpMenu(menuListener);
-             
+
+        JMenu courses = createCourseMenu(menuListener);
         JMenu themes = createThemeMenu();
-        
+        JMenu help = createHelpMenu(menuListener);
+
+        menu.add(courses);
         menu.add(themes);
         menu.add(help);
         this.pack();
@@ -156,4 +158,11 @@ public class MainFrame extends JFrame {
         return themesMenu;
     }
 
+    private JMenu createCourseMenu(MenuListener menuListener) {
+        JMenu courseMenu = new JMenu("Courses");
+        JMenuItem selectCourse = new JMenuItem("Select Course");
+        selectCourse.addActionListener(e -> menuListener.openListCourses(this));
+        courseMenu.add(selectCourse);
+        return courseMenu;
+    }
 }

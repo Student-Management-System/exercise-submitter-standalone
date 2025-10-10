@@ -6,11 +6,13 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import net.ssehub.teaching.exercise_submitter.lib.data.Assignment;
+import net.ssehub.teaching.exercise_submitter.lib.data.Course;
 import net.ssehub.teaching.exercise_submitter.lib.replay.Replayer.Version;
 import net.ssehub.teaching.exercise_submitter.standalone.StandaloneSubmitterVersion;
 import net.ssehub.teaching.exercise_submitter.standalone.components.MainFrame;
 import net.ssehub.teaching.exercise_submitter.standalone.dialog.DialogResult;
 import net.ssehub.teaching.exercise_submitter.standalone.dialog.IDialogCallback;
+import net.ssehub.teaching.exercise_submitter.standalone.stumgmt.ListCourses;
 import net.ssehub.teaching.exercise_submitter.standalone.submission.CompareSubmission;
 import net.ssehub.teaching.exercise_submitter.standalone.submission.ListAssignments;
 import net.ssehub.teaching.exercise_submitter.standalone.submission.ListVersions;
@@ -142,5 +144,9 @@ public class MenuListener {
                                         "About" , JOptionPane.INFORMATION_MESSAGE));
         
     }
-    
+
+    public void openListCourses(MainFrame frame) {
+        ListCourses courses = new ListCourses(frame);
+        courses.startAsync();
+    }
 }
