@@ -70,6 +70,15 @@ public class SubmissionPanel extends JPanel {
             listener.submit();
         });
     }
+
+    /**
+     * Update the submission panel to get all the assignments for the current course.
+     */
+    public void update() {
+        assignments = new ArrayList<>();
+        loadAssignmentsIntoComboBox();
+    }
+
     /**
      * Load the assignments in the combobox.
      */

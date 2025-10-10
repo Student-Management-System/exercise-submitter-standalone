@@ -13,11 +13,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-
-import net.ssehub.teaching.exercise_submitter.lib.data.Course;
-import net.ssehub.teaching.exercise_submitter.lib.student_management_system.ApiException;
-import net.ssehub.teaching.exercise_submitter.standalone.StandaloneSubmitter;
-import net.ssehub.teaching.exercise_submitter.standalone.dialog.IDialogCallback;
 import net.ssehub.teaching.exercise_submitter.standalone.listener.MenuListener;
 import net.ssehub.teaching.exercise_submitter.standalone.listener.ResultListener;
 import net.ssehub.teaching.exercise_submitter.standalone.listener.SubmissionListener;
@@ -71,7 +66,7 @@ public class MainFrame extends JFrame {
         JMenu submitMenu = createSubmitMenu(listener, menuListener);
         menu.add(submitMenu);
 
-        JMenu courses = createCourseMenu(menuListener, submissionPanel);
+        JMenu courses = createCourseMenu(menuListener, submissionPanel::update);
         JMenu themes = createThemeMenu();
         JMenu help = createHelpMenu(menuListener);
 
@@ -162,10 +157,10 @@ public class MainFrame extends JFrame {
         return themesMenu;
     }
 
-    private JMenu createCourseMenu(MenuListener menuListener, SubmissionPanel submissionPanel) {
+    private JMenu createCourseMenu(MenuListener menuListener, Runnable submissionUpdate) {
         JMenu courseMenu = new JMenu("Courses");
         JMenuItem selectCourse = new JMenuItem("Select Course");
-        selectCourse.addActionListener(e -> menuListener.openListCourses(this));
+        selectCourse.addActionListener(e -> menuListener.openListCourses(this, submissionUpdate));
         courseMenu.add(selectCourse);
         return courseMenu;
     }

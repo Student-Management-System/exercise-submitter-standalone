@@ -147,12 +147,19 @@ public class MenuListener {
         
     }
 
-    public void openListCourses(MainFrame frame) {
+    /**
+     * Creates a new {@link ListCourses} object to show the available courses and defines its callback.
+     *
+     * @param frame The MainFrame.
+     * @param submissionUpdate Runnable to update the submission list after a new course was set.
+     */
+    public void openListCourses(MainFrame frame, Runnable submissionUpdate) {
         IDialogCallback<Course> callback = result -> {
             try {
                 Course course = result.getResult().get();
                 StandaloneSubmitter.getHandler().getManager().setCourse(course.getId());
                 frame.setTitle("Standalone Exercise Submitter: " + course.getName());
+                submissionUpdate.run();
             } catch (ApiException e) {
                 System.err.println(e.getLocalizedMessage());
             }
