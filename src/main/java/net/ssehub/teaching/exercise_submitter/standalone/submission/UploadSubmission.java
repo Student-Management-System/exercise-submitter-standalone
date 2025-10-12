@@ -2,7 +2,6 @@ package net.ssehub.teaching.exercise_submitter.standalone.submission;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -100,10 +99,10 @@ public class UploadSubmission {
                 JOptionPane.showMessageDialog(null, 
                         "Submission was accepted", "Success!" , JOptionPane.INFORMATION_MESSAGE);
                 changeResultLabel("Submission was accepted");
-                SubmissionFilesDialog dialog = new SubmissionFilesDialog(new ArrayList<>(),  null);
+                List<Path> submissionFiles = result.getSubmissionFiles();
+                SubmissionFilesDialog dialog = new SubmissionFilesDialog(submissionFiles,  null);
                 dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
                 dialog.setVisible(true);
-                // ToDo: Add actually submitted files to the display list.
             } else {
                 ExceptionDialog.createExceptionDialog(
                         "Submission is NOT accepted see the result on the right side", null);

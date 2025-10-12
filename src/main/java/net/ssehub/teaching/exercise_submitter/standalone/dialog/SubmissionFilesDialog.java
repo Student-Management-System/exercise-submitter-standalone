@@ -45,12 +45,13 @@ public class SubmissionFilesDialog extends Dialog<Path> {
      */
     private void createDialog() {
         setLocationRelativeTo(frame);
-        setSize(475, 200);
         setTitle("Submitted Files");
 
-        JPanel contentPanel = new JPanel();
-        contentPanel.setLayout(new BorderLayout());
-        createList(contentPanel);
+        JPanel listPanel = new JPanel();
+        listPanel.setLayout(new BorderLayout());
+        JScrollPane scrollPane = createList();
+        listPanel.add(scrollPane,  BorderLayout.CENTER);
+        getContentPane().add(listPanel, BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
@@ -59,6 +60,7 @@ public class SubmissionFilesDialog extends Dialog<Path> {
         JButton okButton = new JButton("OK");
         okButton.addActionListener(event -> this.dispose());
         buttonPanel.add(okButton);
+        pack();
     }
 
     /**
@@ -66,10 +68,11 @@ public class SubmissionFilesDialog extends Dialog<Path> {
      *
      * @param contentPanel the content panel for this dialog.
      */
-    private void createList(JPanel contentPanel) {
-        JList<String> list = new JList<>(files.stream()
+    private JScrollPane createList() {
+        String[] pathStrings = files.stream()
                 .map(Path::toString)
-                .toArray(String[]::new));
-        contentPanel.add(new JScrollPane(list),  BorderLayout.CENTER);
+                .toArray(String[]::new);
+        JList<String> list = new JList<>(pathStrings);
+        return new JScrollPane(list);
     }
 }
