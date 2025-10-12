@@ -2,8 +2,11 @@ package net.ssehub.teaching.exercise_submitter.standalone.components.tree;
 
 import net.ssehub.teaching.exercise_submitter.standalone.stumgmt.StumgmtHandler;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.*;
+import java.util.function.Predicate;
 
 /**
  * This filter can filter specific file extensions.
@@ -12,47 +15,75 @@ import java.util.*;
  *
  */
 public class FileFilter {
-    private String filename;
-    
-    private List<String> filtered = new ArrayList<String>();
+    private Predicate<Path> filter;
     
     /**
      * Creates an instance of {@link FileFilter}.
-     * @param filename
      */
-    public FileFilter(String filename) {
-        this.filename = filename;
-        this.createFilterWords();
+    public FileFilter() {
+        this.filter = createFilter();
     }
+
     /**
-     * Creates a list of file extension that should be filtered.
-     * 
+     * Returns the file filter predicate.
+     * @return The file filter predicate.
      */
-    private void createFilterWords() {
+    public Predicate<Path> getFilter() {
+        return filter;
+    }
+
+    /**
+     * Creates a path predicate which can be used to filter out files before submission and when displaying them
+     * on the file tree panel.
+     * Uses the config properties "excludedExtensions" to filter out files which end with any of those file extensions,
+     * and "excludedDirs" to filter out files whose path starts with any of the dirs.
+     * Items in the property lists are separated by ','.
+     * If any of the properties are missing will return an empty filter.
+     *
+     * @return A Predicate<Path> which filters the excluded file extensions and directories. Returns null if the config
+     * could not be loaded.
+     */
+    private static Predicate<Path> createFilter() {
         Properties prop = new Properties();
         try {
             prop.load(StumgmtHandler.class.getResourceAsStream("config.properties"));
         } catch (IOException e) {
             System.out.println("Could not load config file");
-            return;
+            return null;
         }
-        String filterExpressions = prop.getProperty("excluded");
-        if (filterExpressions == null) {
-            System.out.println("Filter expressions not found");
-            return;
+        String extensionsString = prop.getProperty("excludedExtensions");
+        Predicate<Path> extensionExclusion = p -> false;
+        if (extensionsString != null) {
+            for (String ext : extensionsString.split(",")) {
+                final String extension = ext.trim();
+                extensionExclusion = extensionExclusion.or(
+                        p -> p.getFileName() != null && p.getFileName().toString().endsWith(extension)
+                );
+            }
         }
-        filtered.addAll(Arrays.asList(filterExpressions.split(",")));
-        // Todo: current filter does not change which files are submitted, only which are displayed
+
+        String dirString = prop.getProperty("excludedDirs");
+        Predicate<Path> dirExclusion = p -> false;
+        if (dirString != null) {
+            for (String dir : dirString.split(",")) {
+                final Path excludedDirPath = Path.of(dir.trim());
+
+                dirExclusion = dirExclusion.or(
+                        p -> p.startsWith(excludedDirPath)
+                );
+            }
+        }
+        Predicate<Path> shouldExclude = extensionExclusion.or(dirExclusion);
+        return shouldExclude.negate().and(Objects::nonNull);
     }
 
     /**
-     * Checks if an file extension is not in the {@link #filtered} list.
-     * 
-     * @return true if not in the {@link #filtered} list.
+     * Tests a given file against the file filter. Used for the display on the file tree.
+     * @param file The given file to be checked.
+     * @return true if the file should not be filtered and is allowed, false otherwise.
      */
-    public boolean isAllowed() {
-        Optional<String> findword = filtered.stream().filter(e -> filename.endsWith(e)).findFirst();     
-        return findword.isEmpty();
-        
+    public boolean isAllowed(File file) {
+        String filePath = file.getPath();
+        return filter.test(Path.of(filePath));
     }
 }

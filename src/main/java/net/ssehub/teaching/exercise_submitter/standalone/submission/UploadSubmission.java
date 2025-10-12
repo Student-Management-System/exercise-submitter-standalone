@@ -4,6 +4,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import javax.swing.JOptionPane;
 import javax.swing.JDialog;
@@ -15,14 +16,13 @@ import net.ssehub.teaching.exercise_submitter.lib.submission.SubmissionException
 import net.ssehub.teaching.exercise_submitter.lib.submission.SubmissionResult;
 import net.ssehub.teaching.exercise_submitter.standalone.StandaloneSubmitter;
 import net.ssehub.teaching.exercise_submitter.standalone.components.ResultPanel;
+import net.ssehub.teaching.exercise_submitter.standalone.components.tree.FileFilter;
 import net.ssehub.teaching.exercise_submitter.standalone.dialog.SubmissionFilesDialog;
 import net.ssehub.teaching.exercise_submitter.standalone.exception.ExceptionDialog;
 import net.ssehub.teaching.exercise_submitter.standalone.exception.JobResultException;
 import net.ssehub.teaching.exercise_submitter.standalone.jobs.IRunnableJob;
 import net.ssehub.teaching.exercise_submitter.standalone.jobs.Job;
-import net.ssehub.teaching.exercise_submitter.standalone.jobs.JobResult;
 import net.ssehub.teaching.exercise_submitter.standalone.listener.ResultListener;
-
 
 
 /**
@@ -54,29 +54,28 @@ public class UploadSubmission {
      * 
      */
     public void startAsync() {
-        
-        IRunnableJob<SubmissionResult, Exception> func = new IRunnableJob<SubmissionResult, Exception>() {
-
-            @Override
-        public void run(JobResult<SubmissionResult, Exception> result) {
-                try {
-                    result.setOutput(
-                        StandaloneSubmitter
-                        .getHandler()
-                        .getManager()
-                        .getSubmitter(assignment)
-                        .submit(dirPath.toFile())); // Todo: add filters
-                } catch (IllegalArgumentException | SubmissionException | ApiException e) {
-                    result.setException(e);
-                }
-            
+        FileFilter filter = new FileFilter();
+        Predicate<Path> file_filter = filter.getFilter();
+        IRunnableJob<SubmissionResult, Exception> func = result -> {
+            try {
+                result.setOutput(
+                    StandaloneSubmitter
+                    .getHandler()
+                    .getManager()
+                    .getSubmitter(assignment)
+                    .submit(dirPath.toFile(), file_filter));
+            } catch (IllegalArgumentException | SubmissionException | ApiException e) {
+                result.setException(e);
             }
+
         };
         
         Job<SubmissionResult, Exception> job =
-                new Job<SubmissionResult, Exception>(this::onFinishedSubmission, func);
+                new Job<>(this::onFinishedSubmission, func);
         job.start();
     }
+
+
     /**
      * Sets the {@link ResultListener}.
      * 

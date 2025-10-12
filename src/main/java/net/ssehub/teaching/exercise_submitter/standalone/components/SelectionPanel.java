@@ -129,21 +129,19 @@ public class SelectionPanel extends JPanel {
             DefaultMutableTreeNode parentNode, File dir, FileCounter counter) {
         File[] files = dir.listFiles();
         if (files != null) {
+            FileFilter filter = new FileFilter();
             for (File file : files) {
                 FileCategorie category = file.isDirectory() ? FileCategorie.DIRECTORY : FileCategorie.FILE;
                 
                 DefaultMutableTreeNode fileNode = new DefaultMutableTreeNode(
                         new CustomTreeCelItem(category, file.getName()));
                 
-                FileFilter filter = new FileFilter(file.getName());
-                
-                if (filter.isAllowed()) {
-                    
+
+                if (filter.isAllowed(file)) {
                     counter.checkFile(file.getName());
-                    
                     parentNode.add(fileNode);
-                    
                 }
+
                 if (file.isDirectory()) {
                     createsNodesForDirectory(fileNode, file, counter);
                 }
