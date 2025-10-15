@@ -2,8 +2,10 @@ package net.ssehub.teaching.exercise_submitter.standalone.components;
 
 import java.awt.BorderLayout;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Optional;
+import java.util.Properties;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -25,6 +27,7 @@ import net.ssehub.teaching.exercise_submitter.standalone.components.tree.FileCou
 import net.ssehub.teaching.exercise_submitter.standalone.components.tree.FileFilter;
 import net.ssehub.teaching.exercise_submitter.standalone.listener.ResultListener;
 import net.ssehub.teaching.exercise_submitter.standalone.listener.SubmissionListener;
+import net.ssehub.teaching.exercise_submitter.standalone.stumgmt.StumgmtHandler;
 
 /**
  * Display the selection field in the mainframe.
@@ -179,14 +182,36 @@ public class SelectionPanel extends JPanel {
         }
         
         filesDisplay.updateDisplay(filecounter);
-        
-        if (!filecounter.areJavaFilesAvailable()) {
-            JOptionPane.showMessageDialog(this, 
-                    "No JavaFiles in selected directory",
+
+        showJavaWarningIfEnabled();
+    }
+
+    /**
+     * Shows a warning dialog if no .java files are in the submission directory and the 'enableJavaWarning' property
+     * is set to 'true' in the config.properties.
+     */
+    private void showJavaWarningIfEnabled() {
+        boolean javaWarningEnabled = false;
+        Properties prop = new Properties();
+        try {
+            prop.load(StumgmtHandler.class.getResourceAsStream("config.properties"));
+            String javaWarningDisabledProp = prop.getProperty("enableJavaWarning");
+
+            if (javaWarningDisabledProp != null && javaWarningDisabledProp.equals("true")) {
+                javaWarningEnabled = true;
+            }
+        } catch (IOException e) {
+            System.out.println("Could not load config file");
+            return;
+        }
+
+        if (!filecounter.areJavaFilesAvailable() && javaWarningEnabled) {
+            JOptionPane.showMessageDialog(this,
+                    "No Java files in selected directory",
                     "Warning!" , JOptionPane.WARNING_MESSAGE);
         }
-        
     }
+
     /**
      * Opens the {@see #JFileChooser}.
      * 
