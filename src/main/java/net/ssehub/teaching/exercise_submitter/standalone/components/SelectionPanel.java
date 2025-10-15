@@ -56,14 +56,21 @@ public class SelectionPanel extends JPanel {
         top.add(pathField, BorderLayout.CENTER);
         
         filecounter = new FileCounter();
-        
+        FileFilter fileFilter = new FileFilter();
+
         listener.addPathSelectionListener((path) -> {
             if (path.isPresent()) {
+                Path submissionDir = path.orElseThrow();
                 filecounter.clear();
                 resultlistener.clearRows();
                 resultlistener.setResultMessage("");
                 setTree(createsNodesForDirectory(
-                        new DefaultMutableTreeNode(""), path.orElseThrow().toFile(), filecounter));
+                        new DefaultMutableTreeNode(""),
+                        submissionDir.toFile(),
+                        filecounter,
+                        fileFilter,
+                        submissionDir
+                ));
             }
         }
         );
@@ -123,27 +130,36 @@ public class SelectionPanel extends JPanel {
      * @param parentNode The parent node to add the nodes for the files to.
      * @param dir The directory to create nodes for.
      * @param counter The counter for counting the files.
+     * @param fileFilter The filter used to filter directories and files.
+     * @param submissionDir Path to the submission dir.
      * @return  the node
      */
     public DefaultMutableTreeNode createsNodesForDirectory(
-            DefaultMutableTreeNode parentNode, File dir, FileCounter counter) {
+            DefaultMutableTreeNode parentNode,
+            File dir,
+            FileCounter counter,
+            FileFilter fileFilter,
+            Path submissionDir) {
         File[] files = dir.listFiles();
         if (files != null) {
-            FileFilter filter = new FileFilter();
             for (File file : files) {
                 FileCategorie category = file.isDirectory() ? FileCategorie.DIRECTORY : FileCategorie.FILE;
-                
+                Path relativePath = submissionDir.relativize(file.toPath());
                 DefaultMutableTreeNode fileNode = new DefaultMutableTreeNode(
                         new CustomTreeCelItem(category, file.getName()));
-                
-
-                if (filter.isAllowed(file)) {
-                    counter.checkFile(file.getName());
-                    parentNode.add(fileNode);
-                }
 
                 if (file.isDirectory()) {
-                    createsNodesForDirectory(fileNode, file, counter);
+                    if (!fileFilter.isAllowedDir(relativePath)) {
+                        continue;
+                    }
+                    createsNodesForDirectory(fileNode, file, counter, fileFilter, submissionDir);
+                    parentNode.add(fileNode);
+                } else {
+                    if (!fileFilter.isAllowedFile(relativePath)) {
+                        continue;
+                    }
+                    counter.checkFile(file.getName());
+                    parentNode.add(fileNode);
                 }
             }
         }
