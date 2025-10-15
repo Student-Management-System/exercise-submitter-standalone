@@ -98,10 +98,6 @@ public class UploadSubmission {
                 JOptionPane.showMessageDialog(null, 
                         "Submission was accepted", "Success!" , JOptionPane.INFORMATION_MESSAGE);
                 changeResultLabel("Submission was accepted");
-                List<Path> submissionFiles = result.getSubmissionFiles();
-                SubmissionFilesDialog dialog = new SubmissionFilesDialog(submissionFiles,  null);
-                dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-                dialog.setVisible(true);
             } else {
                 ExceptionDialog.createExceptionDialog(
                         "Submission is NOT accepted see the result on the right side", null);

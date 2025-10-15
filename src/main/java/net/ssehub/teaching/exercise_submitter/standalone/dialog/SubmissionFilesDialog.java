@@ -64,9 +64,9 @@ public class SubmissionFilesDialog extends Dialog<Path> {
     }
 
     /**
-     * Populates a list of paths into the contentPanel.
+     * Generate a JScrollPane containing a list of the dialogs files.
      *
-     * @param contentPanel the content panel for this dialog.
+     * @return JScrollPane containing JList of file paths.
      */
     private JScrollPane createList() {
         String[] pathStrings = files.stream()
