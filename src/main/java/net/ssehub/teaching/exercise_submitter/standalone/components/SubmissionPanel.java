@@ -53,7 +53,10 @@ public class SubmissionPanel extends JPanel {
             }
         });
 
-        this.loadAssignmentsIntoComboBox();
+        // Skip loading the assignments into the comboBox if no course is set (as in the startup of the program).
+        if (StandaloneSubmitter.getHandler().getManager().getCourse() != null) {
+            this.loadAssignmentsIntoComboBox();
+        }
 
         this.setLayout(new FlowLayout());
         this.add(this.homework);

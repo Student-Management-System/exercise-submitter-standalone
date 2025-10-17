@@ -53,10 +53,15 @@ public class StumgmtHandler {
                     -> new ConnectException(LoginException.NOUSERNAMESAVED)).getUsername())
             .withPassword(new String(this.credentials.orElseThrow(() 
                     -> new ConnectException(LoginException.NOPASSWORDSAVED)).getPassword()))
-            .withCourse(prop.getProperty("courseid"))
             .withAuthUrl(prop.getProperty("authurl"))
             .withMgmtUrl(prop.getProperty("mgmturl"))
-                .withExerciseSubmitterServerUrl(prop.getProperty("exerciseSubmitterUrl"));
+            .withExerciseSubmitterServerUrl(prop.getProperty("exerciseSubmitterUrl"));
+
+            String courseId = prop.getProperty("courseid");
+            if (courseId != null) {
+                factory.withCourse(courseId);
+            }
+
             this.manager = factory.build();
             
         } catch (NetworkException e) {
