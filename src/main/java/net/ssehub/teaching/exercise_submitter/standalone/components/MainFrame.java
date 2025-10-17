@@ -13,6 +13,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import net.ssehub.teaching.exercise_submitter.standalone.StandaloneSubmitter;
 import net.ssehub.teaching.exercise_submitter.standalone.listener.MenuListener;
 import net.ssehub.teaching.exercise_submitter.standalone.listener.ResultListener;
 import net.ssehub.teaching.exercise_submitter.standalone.listener.SubmissionListener;
@@ -78,6 +79,11 @@ public class MainFrame extends JFrame {
         this.setTitle("Standalone Exercise Submitter");
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
+
+        // ask user to choose course if none is set in the config.properties
+        if (StandaloneSubmitter.getHandler().getManager().getCourse() == null) {
+            menuListener.openListCourses(this, submissionPanel::update);
+        }
     }
     
     /**
