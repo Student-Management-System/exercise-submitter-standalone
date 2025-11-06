@@ -1,5 +1,6 @@
 package net.ssehub.teaching.exercise_submitter.standalone.stumgmt;
 
+import net.ssehub.teaching.exercise_submitter.lib.ExerciseSubmitterManager;
 import net.ssehub.teaching.exercise_submitter.lib.student_management_system.ApiException;
 import net.ssehub.teaching.exercise_submitter.lib.data.Course;
 import net.ssehub.teaching.exercise_submitter.standalone.StandaloneSubmitter;
@@ -20,6 +21,7 @@ import java.util.Set;
 public class ListCourses {
     private final JFrame frame;
     private final IDialogCallback<Course> callback;
+    record CourseSets(Set<Course> allCourses, Set<Course> userCourses) {}
 
     public ListCourses(JFrame frame, IDialogCallback<Course> callback) {
         this.frame = frame;
@@ -30,15 +32,19 @@ public class ListCourses {
      * Starts the asynchronous download and display of the courses.
      */
     public void startAsync() {
-        IRunnableJob<Set<Course>, Exception> func = result -> {
+        IRunnableJob<CourseSets, Exception> func = result -> {
             try {
-                result.setOutput(StandaloneSubmitter.getHandler().getManager().getAllCourses());
+                ExerciseSubmitterManager manager = StandaloneSubmitter.getHandler().getManager();
+                Set<Course> allCourses = manager.getAllCourses();
+                Set<Course> userCourses = manager.getCoursesOfUser();
+                CourseSets courseSet = new CourseSets(allCourses, userCourses);
+                result.setOutput(courseSet);
             } catch (ApiException e) {
                 result.setException(e);
             }
         };
 
-        Job<Set<Course>, Exception> job = new Job<>(this::onListCourseFinished, func);
+        Job<CourseSets, Exception> job = new Job<>(this::onListCourseFinished, func);
         job.start();
     }
 
@@ -47,7 +53,7 @@ public class ListCourses {
      *
      * @param job The finished ListCourseJob.
      */
-    private void onListCourseFinished(Job<Set<Course>, Exception> job) {
+    private void onListCourseFinished(Job<CourseSets, Exception> job) {
         if (!job.getJobResult().hasSuceeded()) {
             String message = job.getJobResult().getException().get().getLocalizedMessage();
             ExceptionDialog.createExceptionDialog(message, null);
@@ -55,9 +61,10 @@ public class ListCourses {
         }
 
         SwingUtilities.invokeLater(() -> {
-            Set<Course> courseSet = job.getJobResult().getOutput().get();
-            List<Course> courseList = new ArrayList<>(courseSet);
-            SelectCourseDialog dialog = new SelectCourseDialog(courseList, frame, callback);
+            CourseSets courseSets = job.getJobResult().getOutput().get();
+            List<Course> allCourses = new ArrayList<>(courseSets.allCourses);
+            List<Course> userCourses = new ArrayList<>(courseSets.userCourses);
+            SelectCourseDialog dialog = new SelectCourseDialog(allCourses, userCourses, frame, callback);
             dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
             dialog.setVisible(true);
         });
