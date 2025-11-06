@@ -2,17 +2,29 @@ package net.ssehub.teaching.exercise_submitter.standalone.dialog;
 
 import net.ssehub.teaching.exercise_submitter.lib.data.Course;
 
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.JTable;
+import javax.swing.JPanel;
+import javax.swing.JButton;
+import javax.swing.JScrollPane;
+
+import java.awt.Component;
+import java.awt.FlowLayout;
+import java.awt.BorderLayout;
+
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
-import java.awt.*;
+import java.io.Serial;
 import java.util.List;
 
 public class SelectCourseDialog extends Dialog<Course> {
+    @Serial
     private static final long serialVersionUID = 8427048704579781152L;
 
     private List<Course> courses;
     private JFrame frame;
+    private final List<Course> courses;
+    private final JFrame frame;
     private JTable table;
 
     /**
