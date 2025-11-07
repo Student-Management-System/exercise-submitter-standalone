@@ -79,6 +79,14 @@ public class SelectCourseDialog extends Dialog<Course> {
         buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
         getContentPane().add(buttonPane, BorderLayout.SOUTH);
 
+        JButton refreshButton = new JButton("Refresh");
+        refreshButton.addActionListener(e -> {
+            getDialogResult().setUserAction(DialogResult.UserAction.OK);
+            getDialogResult().setResult(null);
+            doCallback();
+        });
+        buttonPane.add(refreshButton);
+
         okButton = new JButton("OK");
         okButton.addActionListener(event -> {
             getDialogResult().setUserAction(DialogResult.UserAction.OK);
