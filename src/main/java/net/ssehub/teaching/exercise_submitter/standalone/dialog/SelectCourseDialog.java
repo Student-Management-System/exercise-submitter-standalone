@@ -43,9 +43,9 @@ public class SelectCourseDialog extends Dialog<Course> {
     /**
      * Create a new instance of {@link SelectCourseDialog}
      *
-     * @param courses
-     * @param frame
-     * @param callback
+     * @param courses List of all courses in the student management system.
+     * @param frame Frame for the positional basis of the dialog.
+     * @param callback Callback to be called after the dialog is finished.
      */
     public SelectCourseDialog(List<Course> courses, List<Course> userCourses,
                               JFrame frame, IDialogCallback<Course> callback) {
@@ -66,18 +66,60 @@ public class SelectCourseDialog extends Dialog<Course> {
 
         JPanel contentPanel = new JPanel();
         contentPanel.setLayout(new BorderLayout());
-
         getContentPane().add(contentPanel, BorderLayout.CENTER);
 
+        // table
         try {
-            createTable(contentPanel);
+            createTable();
+            configureListSelectionListener();
+            configureHyperlinkHandling();
         } catch (IOException e) {
             ExceptionDialog.createExceptionDialog(e.getLocalizedMessage(), null);
         }
 
+
+        // layout
+        contentPanel.add(new JScrollPane(table), BorderLayout.CENTER);
+        JPanel buttonPane = createButtonPanel();
+        getContentPane().add(buttonPane, BorderLayout.SOUTH);
+    }
+
+    /**
+     * Creates the table and fits the header column to the content.
+     */
+    private void createTable() throws IOException {
+        Object[][] data  = this.convertListToArray();
+        Object[] columnNames = {"Name", "ID", "Enrollment"};
+        table = new JTable(data, columnNames) {
+
+            @Serial
+            private static final long serialVersionUID = 7198620275645798572L;
+
+            @Override
+            public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+                Component component = super.prepareRenderer(renderer, row, column);
+                int rendererWidth = component.getPreferredSize().width;
+                TableColumn tableColumn = getColumnModel().getColumn(column);
+                tableColumn.setPreferredWidth(Math.max(rendererWidth + getIntercellSpacing().width,
+                        tableColumn.getPreferredWidth()));
+                return component;
+            }
+            @Override
+            public boolean editCellAt(int row, int column, java.util.EventObject event) {
+                return false;
+            }
+
+        };
+
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+    }
+
+    /**
+     * Create the button panel for the dialog, including refresh, ok and cancel buttons and their functionality.
+     */
+    private JPanel createButtonPanel() {
         JPanel buttonPane = new JPanel();
         buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
-        getContentPane().add(buttonPane, BorderLayout.SOUTH);
 
         JButton refreshButton = new JButton("Refresh");
         refreshButton.addActionListener(e -> {
@@ -102,64 +144,14 @@ public class SelectCourseDialog extends Dialog<Course> {
             doCallback();
         });
         buttonPane.add(cancelButton);
+        return buttonPane;
     }
 
     /**
-     * Open the given url in the default browser.
-     *
-     * @param url String of the url to open.
+     * Configures the ListSelectionListener such that the ok button is only clickable if a course is selected in which
+     * the current user is enrolled. Also sets the appropriate dialog result.
      */
-    private void openLink(String url) {
-        try {
-            String os = System.getProperty("os.name").toLowerCase();
-            Runtime runtime = Runtime.getRuntime();
-            if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-                Desktop.getDesktop().browse(new java.net.URI(url));
-            } else if (os.contains("mac")) {
-                runtime.exec("open " + url);
-            } else if (os.contains("nix") || os.contains("nux")) {
-                runtime.exec("xdg-open " + url);
-            } else {
-                System.err.println("Unsupported operating system: " + os);
-            }
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        } catch (URISyntaxException ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    /**
-     * Creates the table and fits the header column to the content.
-     *
-     * @param contentPanel
-     */
-    private void createTable(JPanel contentPanel) throws IOException {
-        Object[][] data  = this.convertListToArray();
-        Object[] columnnames = {"Name", "ID", "Enrollment"};
-        table = new JTable(data, columnnames) {
-
-            /**
-             *
-             */
-            @Serial
-            private static final long serialVersionUID = 7198620275645798572L;
-
-            @Override
-            public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
-                Component component = super.prepareRenderer(renderer, row, column);
-                int rendererWidth = component.getPreferredSize().width;
-                TableColumn tableColumn = getColumnModel().getColumn(column);
-                tableColumn.setPreferredWidth(Math.max(rendererWidth + getIntercellSpacing().width,
-                        tableColumn.getPreferredWidth()));
-                return component;
-            }
-            @Override
-            public boolean editCellAt(int row, int column, java.util.EventObject evento) {
-                return false;
-            }
-
-        };
+    private void configureListSelectionListener() {
         table.getSelectionModel().addListSelectionListener(event -> {
             Course course = courses.get(table.getSelectedRow());
             boolean isEnrolled = userCourses.contains(course);
@@ -170,9 +162,13 @@ public class SelectCourseDialog extends Dialog<Course> {
                 okButton.setEnabled(false);
             }
         });
-        table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        contentPanel.add(new JScrollPane(table), BorderLayout.CENTER);
+    }
 
+    /**
+     * Configure the handling of mouse clicks on hyperlinks in the dialog table. Assures that openLink is only called
+     * when an actual hyperlink is clicked.
+     */
+    private void configureHyperlinkHandling() {
         table.getColumnModel().getColumn(2).setCellRenderer(new HyperlinkRenderer());
         table.addMouseListener(new MouseAdapter() {
             @Override
@@ -214,6 +210,32 @@ public class SelectCourseDialog extends Dialog<Course> {
         return result;
     }
 
+    /**
+     * Open the given url in the default browser.
+     *
+     * @param url String of the url to open.
+     */
+    private void openLink(String url) {
+        try {
+            String os = System.getProperty("os.name").toLowerCase();
+            Runtime runtime = Runtime.getRuntime();
+            if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+                Desktop.getDesktop().browse(new java.net.URI(url));
+            } else if (os.contains("mac")) {
+                runtime.exec("open " + url);
+            } else if (os.contains("nix") || os.contains("nux")) {
+                runtime.exec("xdg-open " + url);
+            } else {
+                System.err.println("Unsupported operating system: " + os);
+            }
+        } catch (IOException | URISyntaxException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * Renderer for hyperlinks in the dialog table. Used for enrollment links.
+     */
     static class HyperlinkRenderer extends DefaultTableCellRenderer {
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
