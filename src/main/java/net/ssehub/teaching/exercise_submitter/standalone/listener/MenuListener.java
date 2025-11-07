@@ -156,6 +156,9 @@ public class MenuListener {
     public void openListCourses(MainFrame frame, Runnable submissionUpdate) {
         IDialogCallback<Course> callback = result -> {
             try {
+                if (result.getAction() != DialogResult.UserAction.OK) {
+                    return;
+                }
                 Course course = result.getResult().get();
                 StandaloneSubmitter.getHandler().getManager().setCourse(course.getId());
                 frame.setTitle("Standalone Exercise Submitter: " + course.getName());
