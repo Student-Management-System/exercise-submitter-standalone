@@ -38,6 +38,7 @@ public class SelectCourseDialog extends Dialog<Course> {
     private final List<Course> userCourses;
     private final JFrame frame;
     private JTable table;
+    private JButton okButton;
 
     /**
      * Create a new instance of {@link SelectCourseDialog}
@@ -78,11 +79,12 @@ public class SelectCourseDialog extends Dialog<Course> {
         buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
         getContentPane().add(buttonPane, BorderLayout.SOUTH);
 
-        JButton okButton = new JButton("OK");
+        okButton = new JButton("OK");
         okButton.addActionListener(event -> {
             getDialogResult().setUserAction(DialogResult.UserAction.OK);
             doCallback();
         });
+        okButton.setEnabled(false);
         buttonPane.add(okButton);
         getRootPane().setDefaultButton(okButton);
 
@@ -151,7 +153,14 @@ public class SelectCourseDialog extends Dialog<Course> {
 
         };
         table.getSelectionModel().addListSelectionListener(event -> {
-            getDialogResult().setResult(courses.get(table.getSelectedRow()));
+            Course course = courses.get(table.getSelectedRow());
+            boolean isEnrolled = userCourses.contains(course);
+            if (isEnrolled) {
+                getDialogResult().setResult(course);
+                okButton.setEnabled(true);
+            } else {
+                okButton.setEnabled(false);
+            }
         });
         table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         contentPanel.add(new JScrollPane(table), BorderLayout.CENTER);
